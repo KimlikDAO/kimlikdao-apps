@@ -1,6 +1,7 @@
 build/join/sayfa-%.js: join/sayfa.js \
-    birim/cüzdan/birim.js \
+    birim/cüzdan/*.js \
     birim/dil/birim.js \
+    lib/crosschain/*.js \
     lib/crypto/*.js \
     lib/did/*.js \
     lib/ethereum/*.js \
@@ -21,26 +22,39 @@ build/join/sayfa-%.js: join/sayfa.js \
 	yarn uglifyjs $@ -m -c toplevel,unsafe -o $@
 	wc $@
 
-build/join/sayfa.css: join/sayfa.css
+build/join/l400.keymap: build/birim/lato/l400.keymap
 	mkdir -p $(dir $@)
-	cat $^ | yarn csso --output $@
+	sed 's# -> # -> //kimlikdao.org/#g' $< > $@
 
-build/join/sayfa.keymap: $(call compressions, build/join/sayfa.css)
-	mkdir -p $(dir $@) && >$@
-	tools/keyhasher.py $@ build/join/sayfa.css
+build/join/l700-%.keymap: build/birim/lato/l700-%.keymap
+	mkdir -p $(dir $@)
+	sed 's# -> # -> //kimlikdao.org/#g' $< > $@
 
-build/join/sayfa-%.keymap: $(call compressions, build/join/sayfa-%.js)
+build/join/sayfa-%.css: birim/lato/l400.css \
+    birim/lato/l700.css \
+    build/join/l400.keymap \
+    build/join/l700-%.keymap \
+    join/sayfa.css \
+    birim/ortak.css \
+    birim/başlık/birim.css \
+    birim/cüzdan/birim.css \
+    birim/dil/birim.css
+	mkdir -p $(dir $@)
+	cat $(filter %.css,$^) | yarn csso --output $@
+	tools/keymapper.py $@ $(filter %.keymap,$^)
+
+build/join/sayfa-%.keymap: $(call compressions, build/join/sayfa-%.js build/join/sayfa-%.css)
 	mkdir -p $(dir $@) && > $@
-	tools/keyhasher.py $@ build/join/sayfa-$*.js
+	tools/keyhasher.py $@ build/join/sayfa-$*.js build/join/sayfa-$*.css
 
 build/join-%.html: join/sayfa.html \
     birim/cüzdan.birim \
     birim/dil/birim.html \
-    build/ana/sayfa-%.keymap \
+    birim/logo.birim \
     build/birim/cüzdan/birim.keymap \
     build/birim/dil/birim.keymap \
-    build/font/fonts-%.keymap \
-    build/join/sayfa.keymap \
+    build/join/l400.keymap \
+    build/join/l700-%.keymap \
     build/join/sayfa-%.keymap
 	mkdir -p $(dir $@)
 	node tools/htmlProcessor $< $*
@@ -55,6 +69,7 @@ build/join/prod.js: join/prod.js join/prod.d.js \
     lib/api/jsonrpc.d.js lib/api/jsonrpc.js \
     lib/cloudflare/types.d.js \
     lib/cloudflare/moduleWorker.d.js \
+    lib/crosschain/*.js \
     lib/crypto/modular.js lib/crypto/secp256k1.js lib/crypto/sha3.js \
     lib/did/*.d.js lib/did/section.js \
     lib/ethereum/*.d.js lib/ethereum/evm.js \

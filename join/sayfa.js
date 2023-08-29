@@ -2,21 +2,23 @@ import Cüzdan from "/birim/cüzdan/birim";
 import "/birim/dil/birim";
 import { TCKT_ADDR } from "/lib/ethereum/TCKTLite";
 import dom from "/lib/util/dom";
-import { KimlikDAO } from "/sdk/client";
+import { getValidationRequest } from "/sdk/client";
 
-/** @const {!KimlikDAO} */
-const Client = new KimlikDAO();
-/** @const {Element} */
-const BaşvurDüğmesi = dom.adla("joba");
-/** @const {Element} */
-const GitHubKutusu = dom.adla("joghi");
-/** @const {Element} */
-const EmailKutusu = dom.adla("joemi");
-/** @const {Element} */
-const TwitterKutusu = dom.adla("jotwi");
+/** @const {!Element} */
+const BaşvurDüğmesi = /** @type {!Element} */(dom.adla("joba"));
+/** @const {!Element} */
+const GeriDüğmesi = /** @type {!Element} */(dom.adla("joge"));
+/** @const {!Element} */
+const BaşvurFormu = /** @type {!Element} */(dom.adla("jof"));
+/** @const {!Element} */
+const GitHubKutusu = /** @type {!Element} */(dom.adla("joghi"));
+/** @const {!Element} */
+const EmailKutusu = /** @type {!Element} */(dom.adla("joemi"));
+/** @const {!Element} */
+const TwitterKutusu = /** @type {!Element} */(dom.adla("jotwi"));
 
 /** @type {Element} */
-let SeçiliAçıklama = dom.adla("jod")
+let SeçiliAçıklama = dom.adla("jod");
 /** @type {Element} */
 let SeçiliAd = null;
 
@@ -103,6 +105,7 @@ const githubKutusuDüzelt = () => {
   window.localStorage["github"] = value;
   return fetch("//api.github.com/users/" + value.slice(1)).then((res) => {
     GitHubKutusu.nextElementSibling.innerText = res.ok ? "👍" : "🙅🏾"
+    GitHubKutusu.classList.toggle("err", !res.ok);
     return res.ok;
   });
 }
@@ -110,10 +113,12 @@ const githubKutusuDüzelt = () => {
 const twitterKutusuDüzelt = () => {
   /** @const {string} */
   const value = kullanıcıAdıDüzelt(TwitterKutusu);
-  if (value.length > 1) {
-    window.localStorage["twitter"] = value;
-    TwitterKutusu.nextElementSibling.innerText = "👍";
-  }
+  /** @const {boolean} */
+  const isValid = value.length > 1;
+  if (isValid)window.localStorage["twitter"] = value;
+
+  TwitterKutusu.nextElementSibling.innerText = isValid ? "👍" : "🙅🏾";
+  TwitterKutusu.classList.toggle("err", !isValid);
 }
 
 /**
@@ -125,16 +130,9 @@ const emailKutusuDüzelt = () => {
   /** @const {boolean} */
   const isValid = value.indexOf("@") < value.lastIndexOf(".");
   EmailKutusu.nextElementSibling.innerText = isValid ? "👍" : "🙅🏾";
+  EmailKutusu.classList.toggle("err", !isValid);
   if (isValid) window.localStorage["email"] = value;
   return isValid;
-}
-
-const cüzdanKoptu = () => {
-  BaşvurDüğmesi.href = "javascript:";
-  BaşvurDüğmesi.target = "";
-  BaşvurDüğmesi.onclick = Cüzdan.bağla;
-  BaşvurDüğmesi.innerText = dom.TR
-    ? "Cüzdan bağla" : "Connect wallet";
 }
 
 const sıfırla = () => {
@@ -147,14 +145,11 @@ const sıfırla = () => {
     (e) => e.nextElementSibling.innerText = "");
 }
 
-const anonimBaşvur = () => {
-
-}
-
 /**
  * @param {Response} res
+ * @param {!Promise<!eth.ERC721Unlockable>} dosyaSözü
  */
-const başvuruSonrası = (res) => {
+const başvuruSonrası = (res, dosyaSözü) => {
   if (!res) return;
   sıfırla();
   BaşvurDüğmesi.innerText = res.ok
@@ -163,14 +158,16 @@ const başvuruSonrası = (res) => {
   dom.düğmeDurdur(BaşvurDüğmesi);
   setTimeout(() => {
     BaşvurDüğmesi.classList.remove("dis");
-    cüzdanBağlandı();
+    tcktDeğişti("0x", dosyaSözü);
   }, 3000);
 }
 
 /**
  * Başvuru için gereken bilgileri toplayıp join.kimlikdao.org'a POST'lar.
+ *
+ * @param {!Promise<!eth.ERC721Unlockable>} dosyaSözü
  */
-const başvur = () => {
+const başvur = (dosyaSözü) => {
   /** @const {string} */
   const ilan = window.location.hash.slice(1);
   /** @const {boolean} */
@@ -181,8 +178,12 @@ const başvur = () => {
   githubİyiSözü.then((githubİyi) => {
     if (!githubİyi) return;
     BaşvurDüğmesi.innerText = dom.TR ? "Başvurunuz yollanıyor ⏳" : "Sending your application ⏳";
-    return Client.getValidationRequest(
+    return dosyaSözü.then((dosya) => getValidationRequest(
+      Cüzdan.bağlantı(),
+      Cüzdan.ağ(),
       TCKT_ADDR,
+      /** @type {string} */(Cüzdan.adres()),
+      dosya,
       ["personInfo", "contactInfo", "addressInfo", "kütükBilgileri"],
       (decryptedSections) => sorguOluştur(ilan, decryptedSections)
     ).then((/** @type {!kimlikdao.ValidationRequest} */ istek) => {
@@ -199,29 +200,42 @@ const başvur = () => {
         headers: { "content-type": "application/json;charset=utf-8" },
         body: JSON.stringify(istek)
       })
-    }).catch(cüzdanBağlandı)
-      .then(başvuruSonrası)
+    }).catch(() => tcktDeğişti("0x", dosyaSözü))
+      .then((res) => başvuruSonrası(res, dosyaSözü))
+    )
   })
 }
 
-const cüzdanBağlandı = () => {
-  BaşvurDüğmesi.href = "javascript:";
-  BaşvurDüğmesi.innerText = dom.TR ? "TCKT ile başvur" : "Apply with TCKT";
-  Client.hasDID(TCKT_ADDR).then((hasTCKT) => {
-    if (hasTCKT)
-      BaşvurDüğmesi.onclick = başvur;
-    else {
-      BaşvurDüğmesi.innerText = dom.TR ? "TCKT al" : "Mint your TCKT";
-      BaşvurDüğmesi.href = "//kimlikdao.org/" + (dom.TR ? "al#sonra=" : "mint#then=") +
-        encodeURIComponent("" + window.location);
+/** @type {?string} */
+let BağlaMetni;
+
+/**
+ * @param {?string} cidHex
+ * @param {Promise<!eth.ERC721Unlockable>} dosyaSözü
+ */
+const tcktDeğişti = (cidHex, dosyaSözü) => {
+  BaşvurDüğmesi.onclick = cidHex
+    ? dosyaSözü
+      ? () => başvur(/** @type {!Promise<!eth.ERC721Unlockable>} */(dosyaSözü))
+      : () => window.location.href = "//kimlikdao.org/" + (dom.TR ? "al#sonra=" : "mint#then=") +
+        encodeURIComponent("" + window.location)
+    : () => {
+      Cüzdan.aç();
+      window.scrollTo({ top: 0, behavior: "smooth" });
     }
-  })
+  if (cidHex) {
+    if (!BağlaMetni) BağlaMetni = BaşvurDüğmesi.innerText;
+    BaşvurDüğmesi.innerText = dosyaSözü
+      ? dom.TR ? "TCKT ile başvur" : "Apply with TCKT"
+      : dom.TR ? "TCKT al" : "Mint your TCKT";
+  } else if (BağlaMetni)
+    BaşvurDüğmesi.innerText = BağlaMetni;
 }
 
 const kur = () => {
-  /** @const {Element} */
-  const ilanlar = dom.adla("jobs");
-  for (const elm of ilanlar.children)
+  /** @const {!NodeList<!Element>} */
+  const ilanlar = dom.adla("jobs").children;
+  for (const elm of ilanlar)
     if (elm.classList == "joc")
       elm.onclick = () => ilanSeç(elm.id.slice(3));
 
@@ -229,12 +243,12 @@ const kur = () => {
   const ilan = window.location.hash.slice(1);
   if (ilan) ilanSeç(ilan);
   window.onhashchange = () => ilanSeç(window.location.hash.slice(1));
-  dom.adla("joge").onclick = () => ilanSeç("");
+  GeriDüğmesi.onclick = () => ilanSeç("");
 
-  if (window["ethereum"])
-    cüzdanKoptu();
+  tcktDeğişti(null, null);
+  Cüzdan.tcktDeğişince(tcktDeğişti);
 
-  for (const elm of dom.adla("jof").elements) {
+  for (const elm of BaşvurFormu.elements) {
     /** @const {?string} */
     const value = window.localStorage[elm.name];
     if (value) elm.value = value;
@@ -244,11 +258,6 @@ const kur = () => {
   TwitterKutusu.onpaste = TwitterKutusu.onblur = twitterKutusuDüzelt;
   dom.adla("jonoi").oninput = dom.adla("jolii").onblur = (e) =>
     window.localStorage[e.target.name] = e.target.value;
-
-  Cüzdan.bağlanınca(cüzdanBağlandı);
-  Cüzdan.ağDeğişince(cüzdanBağlandı);
-  Cüzdan.adresDeğişince(cüzdanBağlandı);
-  Cüzdan.kopunca(cüzdanKoptu);
 }
 
 kur();

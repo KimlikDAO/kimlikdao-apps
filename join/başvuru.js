@@ -112,7 +112,7 @@ const başvuruEmailiYolla = (başvuru, env, isValid) => {
       "personalizations": [{
         "to": JSON.parse(env.APPLICATION_RECIPIENTS),
         "dkim_domain": "kimlikdao.org",
-        "dkim_selector": "mc",
+        "dkim_selector": "join",
         "dkim_private_key": env.DKIM_PRIVATE_KEY
       }],
       "from": {

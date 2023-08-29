@@ -14,12 +14,12 @@ const birimOku = (dosyaAdı) => {
     stiller.push("/" + dosyaAdı.slice(0, -11) + '.css');
   }
 
-  sayfa = sayfa.replace(/<birim:([^\s]+)[^\/]+\/>/g, (_, birimAdı) => {
-    let [birim, altStiller] = birimOku(`dapp/birim/${birimAdı.trim()}/birim.html`);
+  sayfa = sayfa.replace(/<birim:([^\s]+)[^>]+>/g, (_, birimAdı) => {
+    let [birim, altStiller] = birimOku(`birim/${birimAdı.trim()}/birim.html`);
     stiller.push(...altStiller);
     return birim;
   });
-  sayfa = sayfa.replace(/<altbirim:([^\s]+)[^\/]+\/>/g, (_, birimAdı) => {
+  sayfa = sayfa.replace(/<altbirim:([^\s]+)[^>]+>/g, (_, birimAdı) => {
     let [birim, altStiller] = birimOku(`${path.dirname(dosyaAdı)}/${birimAdı.trim()}/birim.html`);
     stiller.push(...altStiller);
     return birim;
