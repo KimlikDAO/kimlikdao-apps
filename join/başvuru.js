@@ -3,7 +3,7 @@ import { Validator } from "/sdk/server-js/validator";
 /** @const {!Object<string, string>} */
 const İlanAdı = {
   "ge-ui1": "UI Geliştirici",
-  "ge-protokol1": "Protokol Geliştirici",
+  "ge-sdk1": "SDK Geliştirici",
   "sa-ambassador1": "Ambassador",
 };
 
@@ -46,8 +46,8 @@ const TCKTValidator = new Validator({
  */
 const alındıEmailiYolla = (başvuru, env) => {
   if (!başvuru.email) return;
-  /** @const {!did.PersonInfo} */
-  const personInfo = /** @type {!did.PersonInfo} */(
+  /** @const {did.PersonInfo} */
+  const personInfo = /** @type {did.PersonInfo} */(
     /** @type {!kimlikdao.ValidationRequest} */(başvuru).decryptedSections["personInfo"]);
   /** @const {string} */
   const ilanAdı = İlanAdı[başvuru.ilan];
@@ -61,10 +61,12 @@ const alındıEmailiYolla = (başvuru, env) => {
       "personalizations": [{
         "to": [{
           "email": başvuru.email,
-          "name": personInfo.first + " " + personInfo.last
+          "name": personInfo
+            ? personInfo.first + " " + personInfo.last
+            : başvuru.twitter
         }],
         "dkim_domain": "kimlikdao.org",
-        "dkim_selector": "mc",
+        "dkim_selector": "join",
         "dkim_private_key": env.DKIM_PRIVATE_KEY
       }],
       "from": {
@@ -74,7 +76,7 @@ const alındıEmailiYolla = (başvuru, env) => {
       "subject": `KimlikDAO ${ilanAdı} başvurunuz`,
       "content": [{
         "type": "text/html;charset=utf-8",
-        "value": `Sevgili ${personInfo.first},<br>` +
+        "value": `Sevgili ${personInfo ? personInfo.first : başvuru.twitter},<br>` +
           `KimlikDAO <a href="https://join.kimlikdao.org/#${başvuru.ilan}">${ilanAdı}</a> başvurunu aldık. ` +
           "En kısa zamanda iletişime geçeceğiz.<p>" +
           "Bu esnada KimlikDAO hakkında daha fazla bilgi edinmek için:<table>" +
@@ -97,56 +99,60 @@ const alındıEmailiYolla = (başvuru, env) => {
  * @return {!Promise<!Response>|!Promise<void>}
  */
 const başvuruEmailiYolla = (başvuru, env, isValid) => {
-  /** @const {!did.PersonInfo} */
-  const personInfo = /** @type {!did.PersonInfo} */(
+  /** @const {did.PersonInfo} */
+  const personInfo = /** @type {did.PersonInfo} */(
     /** @type {!kimlikdao.ValidationRequest} */(başvuru).decryptedSections["personInfo"]);
   /** @const {string} */
   const ilanAdı = İlanAdı[başvuru.ilan];
 
+  const body = JSON.stringify({
+    "personalizations": [{
+      "to": JSON.parse(env.APPLICATION_RECIPIENTS),
+      "dkim_domain": "kimlikdao.org",
+      "dkim_selector": "join",
+      "dkim_private_key": env.DKIM_PRIVATE_KEY
+    }],
+    "from": {
+      "email": "dao@kimlikdao.org",
+      "name": "KimlikDAO"
+    },
+    "subject": `Yeni başvuru: ${ilanAdı}, ` + (personInfo
+      ? personInfo.first + " " + personInfo.last
+      : başvuru.twitter),
+    "content": [{
+      "type": "text/html;charset=utf-8",
+      "value": `<!DOCTYPE html><html><head><meta charset="utf-8"/></head><table>` +
+        `<tr><td>TCKT geçerli mi:</td><td>${isValid ? "Evet" : "Hayır"}</td></tr>` +
+        `<tr><td>Konum:</td><td><a href="https://join.kimlikdao.org/#${başvuru.ilan}">${ilanAdı} (${başvuru.ilan})</a></td></tr>` +
+        (başvuru.email
+          ? `<tr><td>Email:</td><td>${başvuru.email}</td></tr>`
+          : "") +
+        (personInfo
+          ? `<tr><td>Ad:</td><td>${personInfo.first} ${personInfo.last}</td></tr>` +
+          `<tr><td>TCKN:</td><td>${personInfo.localIdNumber.slice(2)}</td></tr>`
+          : "") +
+        (başvuru.github
+          ? `<tr><td>GitHub:</td><td><a href="https://github.com/${başvuru.github.slice(1)}">${başvuru.github}</a></td></tr>`
+          : "") +
+        (başvuru.twitter
+          ? `<tr><td>Twitter:</td><td><a href="https://twitter.com/${başvuru.twitter.slice(1)}">${başvuru.twitter}</a></td></tr>`
+          : "") +
+        (başvuru.linkedin
+          ? `<tr><td>LinkedIn:</td><td>${başvuru.linkedin}</td></tr>`
+          : "") +
+        (başvuru.notes
+          ? `<tr><td>Notes:</td><td>${başvuru.notes}</td></tr>`
+          : "") +
+        `</table><pre>${JSON.stringify(başvuru)}</pre></html>`
+    }]
+  });
   return fetch("https://api.mailchannels.net/tx/v1/send", {
     method: "POST",
     headers: {
-      "content-type": "application/json;charset=utf-8"
+      "content-type": "application/json",
+      "accept": "application/json"
     },
-    body: JSON.stringify({
-      "personalizations": [{
-        "to": JSON.parse(env.APPLICATION_RECIPIENTS),
-        "dkim_domain": "kimlikdao.org",
-        "dkim_selector": "join",
-        "dkim_private_key": env.DKIM_PRIVATE_KEY
-      }],
-      "from": {
-        "email": "dao@kimlikdao.org",
-        "name": "KimlikDAO"
-      },
-      "subject": `Yeni başvuru: ${ilanAdı}, ${personInfo.first} ${personInfo.last}`,
-      "content": [{
-        "type": "text/html;charset=utf-8",
-        "value": `<table>` +
-          `<tr><td>TCKT geçerli mi:</td><td>${isValid ? "Evet" : "Hayır"}</td></tr>` +
-          `<tr><td>Konum:</td><td><a href="https://join.kimlikdao.org/#${başvuru.ilan}">${ilanAdı} (${başvuru.ilan})</a></td></tr>` +
-          `<tr><td>Email:</td><td>${başvuru.email}</td></tr>` +
-          `<tr><td>Ad:</td><td>${personInfo.first} ${personInfo.last}</td></tr>` +
-          `<tr><td>TCKN:</td><td>${personInfo.localIdNumber.slice(2)}</td></tr>` +
-          (başvuru.github
-            ? `<tr><td>GitHub:</td><td><a href="https://github.com/${başvuru.github.slice(1)}">${başvuru.github}</a></td></tr>`
-            : "") +
-          (başvuru.twitter
-            ? `<tr><td>Twitter:</td><td><a href="https://twitter.com/${başvuru.twitter.slice(1)}">${başvuru.twitter}</a></td></tr>`
-            : "") +
-          (başvuru.linkedin
-            ? `<tr><td>LinkedIn:</td><td>${başvuru.linkedin}</td></tr>`
-            : "") +
-          (başvuru.notes
-            ? `<tr><td>Notes:</td><td>${başvuru.notes}</td></tr>`
-            : "") +
-          '</table>'
-      }, {
-        "type": "application/json",
-        "value": JSON.stringify(başvuru),
-        "file": "application.json"
-      }]
-    })
+    body
   })
 }
 

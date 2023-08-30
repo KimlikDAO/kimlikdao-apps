@@ -46,6 +46,7 @@ const JoinWorker = {
   fetch(req, env, ctx) {
     if (req.method == "POST")
       return başvuruAl(req, env, ctx);
+
     /** @const {string} */
     const url = req.url;
     /** @const {string} */

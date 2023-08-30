@@ -87,7 +87,7 @@ build/join/prod.js: join/prod.js join/prod.d.js \
                              --entry_point $< \
                              --js $^ \
                              --js_output_file $@
-	yarn uglifyjs $@ -m -c toplevel,unsafe,drop_console -o $@
+	yarn uglifyjs $@ -m -c unsafe -o $@
 	sed -i.bak 's/globalThis.JoinWorker=/export default/g' $@
 	wc $@
 

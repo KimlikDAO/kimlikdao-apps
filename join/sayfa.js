@@ -28,26 +28,34 @@ let SeçiliAd = null;
  *
  * @param {string} ilan
  * @param {!did.DecryptedSections} decryptedSections
+ * @param {boolean} anonimMi
  * @return {!kimlikdao.Challenge}
  */
-const sorguOluştur = (ilan, decryptedSections) => {
+const sorguOluştur = (ilan, decryptedSections, anonimMi) => {
   /** @const {number} */
   const nonce = Date.now();
-  /** @const {!did.PersonInfo} */
-  const personInfo = /** @type {!did.PersonInfo} */(decryptedSections["personInfo"]);
+  /** @const {string} */
+  const sorguMetni = anonimMi
+    ? dom.TR
+      ? "KimlikDAO Ambassador görevine anonim olarak önkayıt yapmak istiyorum.\n\n"
+      : "I would like to pre-apply for the KimlikDAO Ambassador program.\n\n"
+    : (() => {
+      /** @const {!did.PersonInfo} */
+      const personInfo = /** @type {!did.PersonInfo} */(decryptedSections["personInfo"]);
+      return (dom.TR
+        ? "Ben {}, KimlikDAO <> görevine başvurmak amacıyla kişisel bilgilerimin " +
+        "KimlikDAO’ya yollanmasını onaylıyorum.\n\n"
+        : "I, {}, hereby authorize the transmission of my personal information to " +
+        "KimlikDAO in order to apply for the position of KimlikDAO <>.\n\n")
+        .replace("{}", personInfo.first + " " + personInfo.last)
+        .replace("<>", dom.adla("jod" + ilan).firstElementChild.innerText)
+    })();
   /** @const {string} */
   const formattedNonce = new Date(nonce).toISOString()
     .slice(0, 16).replaceAll('-', '.').replace('T', ' ');
   return /** @type {!kimlikdao.Challenge} */({
     nonce,
-    text: (dom.TR
-      ? "Ben {}, KimlikDAO <> görevine başvurmak amacıyla kişisel bilgilerimin " +
-      "KimlikDAO’ya yollanmasını onaylıyorum.\n\n"
-      : "I, {}, hereby authorize the transmission of my personal information to " +
-      "KimlikDAO in order to apply for the position of KimlikDAO <>.\n\n")
-      .replace("{}", personInfo.first + " " + personInfo.last)
-      .replace("<>", dom.adla("jod" + ilan).firstElementChild.innerText)
-      + formattedNonce
+    text: sorguMetni + formattedNonce
   });
 }
 
@@ -73,6 +81,7 @@ const ilanSeç = (ilan) => {
     dom.adlaGösterGizle("jotw", ilan.startsWith("sa"));
     dom.adlaGösterGizle("joem", ilan.startsWith("ge"));
     dom.adlaGösterGizle("jogh", ilan.startsWith("ge"));
+    dom.adlaGösterGizle("joli", ilan.startsWith("ge"));
   } else
     dom.adlaGizle("jobt");
   if (window.location.hash.slice(1) != ilan)
@@ -115,10 +124,11 @@ const twitterKutusuDüzelt = () => {
   const value = kullanıcıAdıDüzelt(TwitterKutusu);
   /** @const {boolean} */
   const isValid = value.length > 1;
-  if (isValid)window.localStorage["twitter"] = value;
+  if (isValid) window.localStorage["twitter"] = value;
 
   TwitterKutusu.nextElementSibling.innerText = isValid ? "👍" : "🙅🏾";
   TwitterKutusu.classList.toggle("err", !isValid);
+  return isValid;
 }
 
 /**
@@ -173,8 +183,13 @@ const başvur = (dosyaSözü) => {
   /** @const {boolean} */
   const geliştirici = ilan.startsWith("ge");
   if (geliştirici && !emailKutusuDüzelt()) return;
+  /** @const {boolean} */
+  const ambassador = ilan.startsWith("sa-ambassador");
+  if (ambassador && !twitterKutusuDüzelt()) return;
+
   /** @const {!Promise<boolean>} */
   const githubİyiSözü = geliştirici ? githubKutusuDüzelt() : Promise.resolve(true);
+
   githubİyiSözü.then((githubİyi) => {
     if (!githubİyi) return;
     BaşvurDüğmesi.innerText = dom.TR ? "Başvurunuz yollanıyor ⏳" : "Sending your application ⏳";
@@ -184,8 +199,8 @@ const başvur = (dosyaSözü) => {
       TCKT_ADDR,
       /** @type {string} */(Cüzdan.adres()),
       dosya,
-      ["personInfo", "contactInfo", "addressInfo", "kütükBilgileri"],
-      (decryptedSections) => sorguOluştur(ilan, decryptedSections)
+      ambassador ? ["humanID"] : ["personInfo", "contactInfo", "addressInfo", "kütükBilgileri"],
+      (decryptedSections) => sorguOluştur(ilan, decryptedSections, ambassador)
     ).then((/** @type {!kimlikdao.ValidationRequest} */ istek) => {
       istek["ilan"] = ilan;
       istek["lang"] = dom.TR ? "tr" : "en";
