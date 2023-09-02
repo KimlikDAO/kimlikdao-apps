@@ -104,7 +104,7 @@ const başvuruEmailiYolla = (başvuru, env, isValid) => {
     /** @type {!kimlikdao.ValidationRequest} */(başvuru).decryptedSections["personInfo"]);
   /** @const {string} */
   const ilanAdı = İlanAdı[başvuru.ilan];
-
+  /** @const {string} */
   const body = JSON.stringify({
     "personalizations": [{
       "to": JSON.parse(env.APPLICATION_RECIPIENTS),
