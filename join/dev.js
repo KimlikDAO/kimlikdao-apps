@@ -1,44 +1,10 @@
-import express from 'express';
-import { readFileSync } from 'fs';
-import path from 'path';
-import { createServer } from 'vite';
+import express from "express";
+import { createServer } from "vite";
+import { sayfaOku } from "../lib/util/birimler.js";
 
-const birimOku = (dosyaAdı) => {
-  let stiller = [];
-  let sayfa = "";
-  try {
-    sayfa = readFileSync(dosyaAdı, 'utf-8');
-    stiller.push("/" + dosyaAdı.slice(0, -5) + ".css");
-  } catch (e) {
-    sayfa = readFileSync(dosyaAdı.slice(0, -11) + '.html', 'utf-8');
-    stiller.push("/" + dosyaAdı.slice(0, -11) + '.css');
-  }
-
-  sayfa = sayfa.replace(/<birim:([^\s]+)[^>]+>/g, (_, birimAdı) => {
-    let [birim, altStiller] = birimOku(`birim/${birimAdı.trim()}/birim.html`);
-    stiller.push(...altStiller);
-    return birim;
-  });
-  sayfa = sayfa.replace(/<altbirim:([^\s]+)[^>]+>/g, (_, birimAdı) => {
-    let [birim, altStiller] = birimOku(`${path.dirname(dosyaAdı)}/${birimAdı.trim()}/birim.html`);
-    stiller.push(...altStiller);
-    return birim;
-  });
-  return [sayfa, stiller];
-};
-
-/** @param {string} dosyaAdı */
-const sayfaOku = (dosyaAdı) => {
-  let [sayfa, stiller] = birimOku(dosyaAdı);
-  stiller = stiller
-    .map((stil) => `  <link href="${stil}" rel="stylesheet" type="text/css" />\n`)
-    .join('');
-  return sayfa.replace("</head>", stiller + "</head>");
-};
-
-/** @const {Object<string, string>} */
+/** @const {!Object<string, { ad: string, dil: string }}>} */
 const SAYFALAR = {
-  "/": "join/sayfa.html",
+  "/": { ad: "join/sayfa.html", dil: "en" },
 };
 
 createServer({
@@ -56,7 +22,9 @@ createServer({
     } else if (!(req.path in SAYFALAR)) {
       res.status(200).end(); // Dev sunucuda hata vermemeye çalış
     } else {
-      let sayfa = sayfaOku(SAYFALAR[req.path]);
+      let { ad, dil } = SAYFALAR[req.path];
+      dil = "tr" in req.query ? "tr" : "en" in req.query ? "en" : dil;
+      const sayfa = sayfaOku(ad, { dil, dev: true }, {});
       vite.transformIndexHtml(req.path, sayfa).then((sayfa) => {
         res.status(200)
           .set({ 'Content-type': 'text/html;charset=utf-8' })
