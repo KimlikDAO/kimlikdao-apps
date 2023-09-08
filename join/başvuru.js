@@ -24,7 +24,7 @@ const sorguyuOnayla = (challenge) => {
   const formatted = new Date(nonce).toISOString()
     .slice(0, 16).replaceAll('-', '.').replace('T', ' ');
 
-  return nonce < now + 1000 && nonce + 6e8 > now &&
+  return nonce < now + 1e7 && nonce + 1e8 > now &&
     challenge.text.endsWith(formatted);
 }
 

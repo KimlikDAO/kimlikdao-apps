@@ -48,9 +48,7 @@ build/join/sayfa-%.keymap: $(call compressions, build/join/sayfa-%.js build/join
 	tools/keyhasher.py $@ build/join/sayfa-$*.js build/join/sayfa-$*.css
 
 build/join-%.html: join/sayfa.html \
-    birim/cüzdan.birim \
-    birim/dil/birim.html \
-    birim/logo.birim \
+    birim/başlık.birim \
     build/birim/cüzdan/birim.keymap \
     build/birim/dil/birim.keymap \
     build/join/l400.keymap \
