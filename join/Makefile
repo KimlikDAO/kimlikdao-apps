@@ -50,6 +50,7 @@ build/join/sayfa-%.keymap: $(call compressions, build/join/sayfa-%.js build/join
 build/join-%.html: join/sayfa.html \
     birim/başlık.birim \
     birim/favicon.birim \
+    birim/lato.birim \
     build/birim/cüzdan/birim.keymap \
     build/birim/dil/birim.keymap \
     build/birim/favicon/birim.keymap \
