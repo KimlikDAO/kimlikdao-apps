@@ -1,4 +1,5 @@
 import Cüzdan from "/birim/cüzdan/birim";
+import Tckt from "/birim/tckt/birim";
 import "/birim/dil/birim";
 import { TCKT_ADDR } from "/lib/ethereum/TCKTLite";
 import dom from "/lib/util/dom";
@@ -262,6 +263,8 @@ const kur = () => {
 
   tcktDeğişti(null, null);
   Cüzdan.tcktDeğişince(tcktDeğişti);
+
+  Tckt.Kök.onclick = Tckt.çevir;
 
   for (const elm of BaşvurFormu.elements) {
     /** @const {?string} */

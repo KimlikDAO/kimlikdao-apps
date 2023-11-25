@@ -1,6 +1,10 @@
+join-en := "?en"
+join-tr := "?tr"
+
 build/join/sayfa-%.js: join/sayfa.js \
     birim/cüzdan/*.js \
     birim/dil/birim.js \
+    birim/tckt/birim.js \
     lib/crosschain/*.js \
     lib/crypto/*.js \
     lib/did/*.js \
@@ -12,6 +16,8 @@ build/join/sayfa-%.js: join/sayfa.js \
 	mkdir -p $(dir $@)
 	yarn google-closure-compiler -W VERBOSE -O ADVANCED --charset UTF-8 \
                              --define "TR\$$\$$module\$$lib\$$util\$$dom=$(Lang-$*)" \
+                             --define "KonumTR\$$\$$module\$$birim\$$dil\$$birim=$(join-tr)" \
+                             --define "KonumEN\$$\$$module\$$birim\$$dil\$$birim=$(join-en)" \
                              --emit_use_strict \
                              --module_resolution NODE \
                              --assume_function_wrapper \
@@ -38,7 +44,8 @@ build/join/sayfa-%.css: birim/lato/l400.css \
     birim/ortak.css \
     birim/başlık/birim.css \
     birim/cüzdan/birim.css \
-    birim/dil/birim.css
+    birim/dil/birim.css \
+    birim/tckt/birim.css
 	mkdir -p $(dir $@)
 	cat $(filter %.css,$^) | yarn csso --output $@
 	tools/keymapper.py $@ $(filter %.keymap,$^)
@@ -51,9 +58,11 @@ build/join-%.html: join/sayfa.html \
     birim/başlık.birim \
     birim/favicon.birim \
     birim/lato.birim \
+    birim/tckt.birim \
     build/birim/cüzdan/birim.keymap \
     build/birim/dil/birim.keymap \
     build/birim/favicon/birim.keymap \
+    build/birim/tckt/birim.keymap \
     build/join/l400.keymap \
     build/join/l700-%.keymap \
     build/join/sayfa-%.keymap
