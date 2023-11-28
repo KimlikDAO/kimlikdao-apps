@@ -107,3 +107,7 @@ join.cf-deployment: build/join.sayfa build/join/prod.js
 	wrangler deploy \
         --config join/prod.toml \
         --compatibility-date $(shell date -v -1d +%Y-%m-%d)
+
+.PHONY: join.dev
+join.dev:
+	node join/dev.js
