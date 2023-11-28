@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html data-en-lang="en" lang=tr>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title data-en="KimlikDAO | Blog">KimlikDAO | Blog</title>
+  <birim:lato />
+  <link href="/birim/ortak.css" rel="stylesheet" type="text/css" data-remove />
+  <link href="/blog/eliptik-egriler/sayfa.css" rel="stylesheet" type="text/css" />
+</head>
+
+<body>
+  <birim:başlık data-link="//kimlikdao.org" />
+  <div id="bl">
+    <div id="blh">
+      <img src="/blog/eliptik-egriler/banner.svg" data-inline />
+      <svg id="bls" width="100%" height="100%">
+        <defs>
+          <clipPath id="blc2">
+            <rect width="400" height="400" rx="15">
+          </clipPath>
+        </defs>
+        <g transform="translate(200,50)">
+          <image id="blr" xlink:href="/birim/tckt/kapak.svg" height="400" width="400" clip-path="url(#blc2)" />
+        </g>
+      </svg>
+    </div>
+    <h1 id=blh1 data-en="Elliptic curves" data-en="Elliptic curves and their use in crypto">Eliptik eğriler ve kriptoda
+      kullanımı</h1>
+    <div id="bla">
+      <svg width="40" height="40">
+        <circle cx="20" cy="20" r="20" fill="none" stroke="#ddd" stroke-width="0.5" />s
+        <use href="#bak" width="32" height="32" x="7" y="4" />
+      </svg>
+      <b class="blan" data-en="KimlikDAO learn & earn">KimlikDAO öğren & kazan</b>
+    </div>
+    <div data-latex data-phantom>
+      Eliptik eğriler $y^2 = x^3 + ax + b$ denklemini sağlayan $(x,y)$ noktalarıdır.
+      Örneğin
+      $a=1$ ve $b=3$ seçersek $y^2 = x^3 + x + 3$ denklemini elde ederiz ve bu denkleme
+      denk gelen eğri gerçel sayılarda şöyle görünüyor:
+      <span data-phantom data-generate="ecReals" data-class=blg data-width="300" data-height="300"></span>
+
+      Eliptik eğriler gerçel sayılarda tanımlanabileceği gibi,
+      toplama, çarpma ve bölmenin tanımlı olduğu (ve bu işlemlerin gerçel sayılardaki gibi dağılma ve birleşme özelliği
+      olan)
+      her küme üzerinde tanımlanabilir. Bu toplama, çarpma, dağılma gibi özellikleri sağlayan kümelere
+      <a target="_blank" href="//tr.wikipedia.org/wiki/Cisim_(cebir)">cisim</a> (İngilizce’si field) adı
+      veriliyor.
+      <h2>$\mod p$’de eliptik eğriler</h2>
+
+      Kriptografide eliptik eğrileri gerçel sayılar yerine $\mod p$’de tamsayılar gibi sonlu sonlu
+      cisimlerde tanımlıyoruz;
+      bunun sebebi
+      hem tüm noktaları dijital olarak hassaslıkla temsil etmek istememiz, hem de $\mod p$’de tamsayılar
+      gibi sonlu cisimlerde eliptik eğri çarpmasının hızlıca yapılıp,
+      bölmesinin hızlıca yapılamaması (bunun detaylarını sonra göreceğiz).
+
+      <p>
+        Hatırlarsak herhangi bir tamsayı $p$ için $\mod p$’de tamsayılar toplama, çarpma, çarpmanın toplama üzerine
+        dağılımı gibi özelliklere sahip. Eğer bir de $p$ asal ise her sayının çarpmaya göre tersi var ve
+        dolayısıyla $\field_p$, diğer bir deyişle $\mod p$’de tamsayılar, bir cisim oluşturuyor. Bu yazının devamında $p$ her
+        zaman bir asal sayıyı temsil edecek.
+      </p>
+
+      <p>
+        Şimdi yukarıdaki $y^2 =x^3 + x+ 3$ eğrisini $\field_{17}$ üzerinde görelim (dikkat edersek 17 asal bir sayı).
+        <span data-phantom data-generate="ecFp" data-class="blg" data-width="500" data-p="17"
+          data-mazgalRenk="#888"></span>
+        Bu grafikte $x$ ekseninde sayıları $\{0,1,\ldots,p-1\}$ ile adlandırdık ama $y$ ekseninde
+        $\{-8, -7, \ldots, 7, 8\}$ yazdık. Hatırlarsak $-8 = 9 \mod 17$, ve $ -7=10\mod 17$, dolayısıyla yine
+        1’den 17’ye kadar bütün sayıları temsil ettik.
+      </p>
+      <p class="blq">
+        Deneme olarak en sol alttakı noktayı alalım: $P = (2, -8)$. Dikkat edersek $2^3 + 2 + 3 = 13$ ve
+        $(-8)^2 = 64 = 13 \mod p$. Gördük ki, $(2,-8)$ noktası eliptik eğri denklemini sağlıyor.
+      </p>
+
+      Eğer elimizde $y_0^2 = x^3 + ax + b$ sağlayan bir $y_0$ varsa
+      aynı zamanda
+
+      $$(-y_0)^2 = x^3 + ax + b$$
+
+      de sağlanır ($(-1)^2 = 1$ olduğundan), dolayısıyla eliptik eğriler $y=0$ doğrusunun
+      etrafında simetriktir. Bunu daha rahat gözlemlemek için $y$ eksenindeki sayıları
+      0’ın etrafında simetrik bir şekilde $\{-8, -7, \ldots, 7, 8\}$ ile temsil ettik.
+      Örneğin $(2,-8)$’in eğri üzerinde olduğunu hesaplamıştık; yukarıdaki gözleme gore $(2, 8)$’in
+      de eğri üzerinde olması lazım; ki grafikte de en sol üstteki nokta $(2,8)$.
+
+      <h2 data-en="Elliptik cuve point addition">Eliptik eğrilerde toplama</h2>
+
+      Şimdi $P = (x_1, y_1)$ ve $Q=(x_2, y_2)$ gibi iki eliptik eğri notası üzerinde
+      bir toplama işlemi tanımlamak istiyoruz.
+      İlk deneme olarak
+      $$ (x_1, y_1) + (x_2, y_2) = (x_1 + x_2, y_1 + y_2)$$
+      diyelim. Burada sorun elde ettiğimiz nokta eliptik üzerinde olmayabilir. Diğer bir deyişle
+      $(y_1 + y_2)^2 = (x_1 + x_2)^2 + x_1 + x_2 + 7$ sağlanmak zorunda değil ve genelde sağlanmayacak.
+
+      <p class=blq data-en="How can we ensure that the summand is on our elliptic curve?">Peki,
+        toplamın yine eliptik eğri üzerinde kalmasını nasıl sağlayabiliriz?</p>
+
+      Toplamayı şöyle tanımlıyoruz: verilen $P$ ve $Q$ noktaları için $P$’den başlayıp $Q$’dan geçen
+      bir ışın çizelim ve
+      $\mod p$’de çalıştığımızı hatırlayarak bir kenara ulaştığımızda karşı kenardan devam
+      edelim. Eliptik eğri üzerinde bir noktaya ulaştığımızda duralım ve, ulaştığımız noktaya $R$ diyerek,
+
+      $$ P + Q + R = 0 $$
+
+      olarak tanımlayalım. Diğer bir deyişle $P + Q = -R$.
+      Örneğin $P = (3, -4)$ ve $Q=(6, -2)$ için $R$’yi şöyle buluyoruz.
+
+      <div class="blg">
+        <span data-phantom data-id="bladd" data-generate="ecAdd" data-width="500" data-p="17"
+          data-mazgalRenk="#888"></span>
+      </div>
+
+      Peki $-R$’yi nasıl bulacağız? Yukarıda eliptik eğri üzerindeki her $(x, y)$ noktasının bir de
+      $(x, -y)$ eşinin olduğunu gözlemlemiştik.
+      Dolayısıyla $R = (x,y)$ için $-R = (x, -y)$ olarak tanımlayalım ve
+
+      $$ -R + R = 0 $$
+
+      diyelim.
+
+      <p class="blq" data-en="Where is the 0 point?">İyi de, nerede bu 0 noktası?</p>
+      Eliptik eğrinin $0$ noktası grafik üzerinde görünmüyor.
+      Bu nokta eliptik eğriyi çizdiğimiz düzlemin dışında ve bazen "sonsuzdaki nokta"
+      olarak da adlandırılıyor.
+
+      <p>
+        Sıfır noktası tamsayılardan alışageldiğimiz her şeyi sağlıyor: $-0 = 0$, her nokta
+        $P$ için $P + O = P$ ve $0 + P = P$.
+      </p>
+      Eğer dünyanın ekvatoru eliptik eğrimiz olsaydı, 0’ı kuzey kutup noktası olarak hayal edebilirdik.
+      Kuzey yarıkürede
+      kutup noktası hariç her noktanın ekvatorda (yani eliptik eğrimiz üzerinde) denk geldiği bir nokta
+      var: aynı boylamı takiben ekvatorda ulaştığımız nokta.
+      Bir tek kutup noktasının denk geldiği bir nokta yok çünkü kuzey
+      kutup noktası bütün boylamların kesişiminde. Eliptik eğrinin $0$ noktası da aynı bu şekilde
+      eğriyi çizdiğimiz düzlemde bir yansımaya sahip değil.
+
+      <h3>Bu tanımladığımız toplama geçerli bir toplama mı?</h3>
+      Yukarıda toplama işlemini bir ışın gönderme işlemi ile tanımladık.
+      Öncelikle, toplamayı tanımlarken "eliptik eğri üzerinde bir noktaya ulaştığımızda duralım" dedik.
+      Peki bu ışının eliptik eğri üzerinde bir noktaya ulaşacağını nereden biliyoruz?
+      Hatırlarsak $P = (x_1, y_1)$ ve $Q = (x_2, y_2)$.
+      Eğer $dx = x_2 - x_1$ ve $dy = y_2 - y_1$ dersek, ışın üzerindeki noktalar
+
+      $$ (x_1 + k\cdot dx, y_1 + k\cdot dx)\quad k = 0, 1, 2,\ldots$$
+
+      olarak yazılabilir. En azından $k = p$ için ışın tekrar $P$ noktasından geçecek ve $P$ eğri üzerinde.
+      (Örneğin $Q= -2P$ ise $P + (-2P) + P = 0$ ve bu durum oluşuyor)
+
+      <p>
+        Her zaman eğri üzerinde bir $R$ noktasına ulaşacağımızı gördük. Peki bu elde ettiğimiz $R$
+        beklediğimiz özellikleri sağlıyor mu?
+      </p>
+
+      <p>
+        <b>Değişme:</b> Her $P,Q$ için $P+Q = Q+P$ olmasını istiyoruz.
+      </p>
+      Yukarıda $P+Q$’yu bulurken $P$’den
+      başlayıp $Q$’dan geçen bir ışın yollayıp eliptik eğriye tekrar ilk $R$ noktasında ulaşmıştık.
+      $Q+P$’yi hesaplarken $Q$’dan başlayıp $P$’den geçen bir ışın yolluyoruz ve eliptik eğriye tekrar
+      ilk $R'$ noktasında ulaşıyoruz. Var sayalım ki $R' \neq R$, yani $P+Q\neq Q+P$. Bu durumda $P$ ve $Q$’dan geçen
+      doğru
+      eliptik eğriyi $P$, $Q$, $R$ ve $R'$ olmak üzere 4 farklı noktada kesiyor.
+
+      Eliptik eğrimiz 3. derece bir denklemle tanımlandığı için bir doğruyu en fazla 3 noktada kesebilir,
+      ve bir çelişkiye ulaştık. Daha detaylı olarak, eğer yolladığımız ışının denklemi $y= mx + d$ ise
+
+      $$(mx + d)^2 = x^3 + ax + b$$
+
+      sağlanmalı. Bu denklemin de en fazla 3 çözümü olabilir.
+      4 çözümu olması mümkün değil, demek ki $R= R'$.
+
+      <p><b>Birleşme:</b> Her $A$, $B$, $C$ noktaları için $(A+B) + C = A + (B+C)$ olmasını istiyoruz</p>
+      Diğer bir deyişle, önce $A + B$’yi bulup bunun sonucunu $C$ ile topladığımızda önce $B+C$’yi bulup
+      bunun sonucunu $A$ ile topladığımızda elde ettiğimiz noktaya ulaşmamız gerekiyor.
+      Toplamayı nasıl tanımladığımızı hatırlarsak (ışın yollama ile), birleşme özelliğinin doğru olması oldukça
+      şaşırtıcı.
+      
+      Bu özelliği kanıtlamak için
+      önce Lamé’nin önsavına ihtiyacımız var.
+
+      <p>
+        <b>Lamé’nin önsavı.</b> Varsayalım ki $a$, $b$, ve $c$ isimli üç adet doğru bir üçüncü derece
+        tekilsiz (nonsingular) eğriyi
+        $a_1$, $a_2$, $a_3$, $b_1$, $b_2$, $b_3$ ve $c_1$, $c_2$, $c_3$ noktalarında kesiyor.
+        Eğer $a_1$, $b_1$, $c_1$ aynı doğru üzerinde kalıyorsa ve $a_3$, $b_3$ ve $c_3$ aynı doğru üzerinde kalıyorsa
+        o zaman $a_2$, $b_2$ ve $c_2$ de aynı doğru üzerindedir.
+      </p>
+
+      <table id="bl">
+        <tr><td>$B$</td></tr>
+      </table>
+
+      <h4>secp256k1 eğrisi</h4>
+      Bitcoin ve Ethereum’da bizim oyuncak eliptik eğrimiz $\field_{17}$’de $y^2 = x^3 + x + 3$’e
+      birçok
+      açıdan çok benzeyen ama devasa bir $p$’ye sahip secp256k1 eğrisi kullanılıyor. Bu eğri
+
+      $$y^2 = x^3 + 7$$
+
+      denkleminin $\field_{115792089237316195423570985008687907853269984665640564039457584007908834671663}$
+      üzerindeki çözümleridir. Buradaki asal $p$’yi daha kolayca
+
+      $$ p= 2^{256} - 2^{32} - 2^9 - 2^8 - 2^7 - 2^6 - 2^4 - 1 $$
+
+      olarak yazabiliriz.
+
+      Uzun lafın kısası bizim oyuncak eğrimiz gerçek kriptografide kullanılanlara
+      çok yakın. Biz tekrar oyuncak eğrimize dönelim.
+
+
+    </div>
+    <p>
+      ECDSA protokolü ilk bakışta biraz karışık ve sebebi anlaşılmaz seçimler içeriyor gibi görünebilir.
+      Biz bu sebepsiz gibi görünen ama aslında çok yerinde olan seçimleri detaylıca anlamak
+      için ilk olarak kolay bir “bildiğini kanıtlama” oyunuyla başlayıp adım adım bu
+      protokolden bir imza protokolü elde edeceğiz.
+    </p>
+  </div>
+  <script async type="module" src="/blog/eliptik-egriler/sayfa.js" data-remove-type></script>
+</body>
+
+</html>

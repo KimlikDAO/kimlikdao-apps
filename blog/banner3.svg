@@ -1,0 +1,42 @@
+<svg viewBox="0 0 440 230" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="750" height="230" fill="#6337BA" />
+
+<path filter="url(#bbb)"
+    d="M-500.082 80.8237C-462.218 -9.71636 195.53 -353.539 319.89 -301.532C444.249 -249.524 262.584 222.95 -2.469 341.623C-166.749 488.248 -452.173 325.038 -466.64 318.988C-590.999 266.981 -537.946 171.364 -500.082 80.8237Z"
+    fill="url(#açıkmavi)" />
+  <path style="mix-blend-mode:color-dodge" filter="url(#ccc)"
+    d="M327.831 -405.479C405.215 -502.585 561.355 -477.571 694.73 -371.281C828.11 -264.991 741.93 315.294 664.547 412.4C587.163 509.506 385.179 -4.72531 251.801 -111.015C118.423 -217.305 250.446 -308.373 327.831 -405.479Z"
+    fill="url(#açıkmor)" />
+  <path style="mix-blend-mode:color-dodge" filter="url(#ddd)"
+    d="M191.8 -5.59486C255.386 204.07 128.727 428.083 -91.1006 494.751C-310.929 561.419 -540.681 445.498 -604.267 235.833C-667.854 26.1679 -541.195 -197.844 -321.367 -264.513C-101.539 -331.181 130.214 -215.26 191.8 -5.59486Z"
+    fill="url(#mavi)" />
+  <defs>
+    <filter id="bbb" x="-600" y="-360" width="1040" height="830" filterUnits="userSpaceOnUse">
+      <feGaussianBlur stdDeviation="30" />
+    </filter>
+    <filter id="ccc" x="134.394" y="-526.6" width="690.155" height="1011.48" filterUnits="userSpaceOnUse">
+      <feGaussianBlur stdDeviation="30" />
+    </filter>
+    <filter id="ddd" x="-656.868" y="-407.437" width="1215.86" height="957.201" filterUnits="userSpaceOnUse">
+      <feGaussianBlur stdDeviation="18" />
+    </filter>
+    <radialGradient id="açıkmavi" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse"
+      gradientTransform="translate(426 92) rotate(-148) scale(650 550)">
+      <stop offset="0.44" stop-color="#7D8AFA" />
+      <stop offset="0.57" stop-color="#5698E2" />
+      <stop offset="0.87" stop-color="#2A4DC1" />
+    </radialGradient>
+    <radialGradient id="açıkmor" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse"
+      gradientTransform="translate(688.489 -399.709) rotate(165.867) scale(1422.01 1203.79)">
+      <stop offset="0.12" stop-color="#2A4DC1" />
+      <stop offset="0.284" stop-color="#935BCA" />
+      <stop offset="0.46" stop-color="#5698E2" />
+    </radialGradient>
+    <linearGradient id="mavi" x1="-661.63" y1="81.546" x2="276.026" y2="-264.263" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#A0A2B4" />
+      <stop offset="0.2" stop-color="#CFD3F2" />
+      <stop offset="0.44" stop-color="#5698E2" />
+      <stop offset="0.5" stop-color="#2A4DC1" />
+    </linearGradient>
+  </defs>
+</svg>
