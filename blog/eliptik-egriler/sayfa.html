@@ -7,25 +7,14 @@
   <title data-en="KimlikDAO | Blog">KimlikDAO | Blog</title>
   <birim:lato />
   <link href="/birim/ortak.css" rel="stylesheet" type="text/css" data-remove />
+  <link href="/blog/ortak.css" rel="stylesheet" type="text/css" data-remove />
   <link href="/blog/eliptik-egriler/sayfa.css" rel="stylesheet" type="text/css" />
 </head>
 
 <body>
-  <birim:başlık data-link="//kimlikdao.org" />
+  <birim:başlık data-title="KimlikDAO blog" />
   <div id="bl">
-    <div id="blh">
-      <img src="/blog/eliptik-egriler/banner.svg" data-inline />
-      <svg id="bls" width="100%" height="100%">
-        <defs>
-          <clipPath id="blc2">
-            <rect width="400" height="400" rx="15">
-          </clipPath>
-        </defs>
-        <g transform="translate(200,50)">
-          <image id="blr" xlink:href="/birim/tckt/kapak.svg" height="400" width="400" clip-path="url(#blc2)" />
-        </g>
-      </svg>
-    </div>
+    <img id=blh src="/blog/eliptik-egriler/banner.svg" data-inline />
     <h1 id=blh1 data-en="Elliptic curves" data-en="Elliptic curves and their use in crypto">Eliptik eğriler ve kriptoda
       kullanımı</h1>
     <div id="bla">
@@ -60,7 +49,8 @@
       <p>
         Hatırlarsak herhangi bir tamsayı $p$ için $\mod p$’de tamsayılar toplama, çarpma, çarpmanın toplama üzerine
         dağılımı gibi özelliklere sahip. Eğer bir de $p$ asal ise her sayının çarpmaya göre tersi var ve
-        dolayısıyla $\field_p$, diğer bir deyişle $\mod p$’de tamsayılar, bir cisim oluşturuyor. Bu yazının devamında $p$ her
+        dolayısıyla $\field_p$, diğer bir deyişle $\mod p$’de tamsayılar, bir cisim oluşturuyor. Bu yazının devamında
+        $p$ her
         zaman bir asal sayıyı temsil edecek.
       </p>
 
@@ -180,7 +170,7 @@
       bunun sonucunu $A$ ile topladığımızda elde ettiğimiz noktaya ulaşmamız gerekiyor.
       Toplamayı nasıl tanımladığımızı hatırlarsak (ışın yollama ile), birleşme özelliğinin doğru olması oldukça
       şaşırtıcı.
-      
+
       Bu özelliği kanıtlamak için
       önce Lamé’nin önsavına ihtiyacımız var.
 
@@ -193,7 +183,9 @@
       </p>
 
       <table id="bl">
-        <tr><td>$B$</td></tr>
+        <tr>
+          <td>$B$</td>
+        </tr>
       </table>
 
       <h4>secp256k1 eğrisi</h4>
