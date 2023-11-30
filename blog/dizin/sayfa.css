@@ -1,11 +1,36 @@
-#di {
-
-}
-
-.dia {
-
+#diz {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+  gap: 20px;
+  padding: 20px;
+  max-width: 1000px;
+  margin: 30px auto;
 }
 
 .dib {
-  font-weight: 700;
+  display: block;
+}
+
+.dip {
+  padding: 0;
+  border: 1px solid #eee;
+  border-radius: 20px;
+  display: block;
+  /* Makes the anchor fill the container */
+  text-decoration: none;
+  /* Inherits text color from parent elements */
+  overflow: hidden;
+}
+
+.dipp {
+  width: 100%;
+}
+
+h4 {
+  font-size: 14pt;
+  margin: 1ex;
+}
+
+.dizc {
+  margin-left: 5px;
 }
