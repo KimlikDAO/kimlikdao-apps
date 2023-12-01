@@ -1,20 +1,17 @@
-.bla {
-  display: flex;
-  align-items: center;
-  margin: 30px 0;
-}
-
-.blan {
-  display: inline-block;
-  margin-left: 10px;
-  font-size: 15px;
-}
-
-.blusd {
+.blusdc {
   font-size: 11pt;
   background: #5698E2;
   color: white;
   border-radius: 10px;
   padding: 6px 10px 5px;
   margin-left: 3em;
+}
+
+.blusdt {
+  background: #50af95;
+  font-size: 11pt;
+  color: white;
+  border-radius: 10px;
+  padding: 6px 10px 5px;
+  margin-left: 20px;
 }

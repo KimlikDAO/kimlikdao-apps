@@ -1,7 +1,7 @@
 <svg viewBox="0 0 440 230" fill="none" xmlns="http://www.w3.org/2000/svg">
   <defs>
     <clipPath id="yuvarla">
-      <rect width="250" height="250" rx="15">
+      <rect width="250" height="250" rx="15" />
     </clipPath>
     <filter id="bbb" x="-600" y="-360" width="1040" height="830" filterUnits="userSpaceOnUse">
       <feGaussianBlur stdDeviation="30" />
@@ -47,4 +47,5 @@
     <g filter="url(#gölge)">
       <image id="blr" xlink:href="/birim/tckt/kapak.svg" height="250" width="250" clip-path="url(#yuvarla)" />
     </g>
+  </g>
 </svg>
