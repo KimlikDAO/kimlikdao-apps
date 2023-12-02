@@ -79,6 +79,7 @@ build/join/prod.js: join/prod.js join/prod.d.js \
     lib/api/jsonrpc.d.js lib/api/jsonrpc.js \
     lib/cloudflare/types.d.js \
     lib/cloudflare/moduleWorker.d.js \
+    lib/cloudflare/pageWorker.d.js lib/cloudflare/pageWorker.js \
     lib/crosschain/*.js \
     lib/crypto/modular.js lib/crypto/secp256k1.js lib/crypto/sha3.js \
     lib/did/*.d.js lib/did/section.js \

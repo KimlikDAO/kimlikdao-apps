@@ -7,12 +7,9 @@
 
 /**
  * @interface
- * @extends {cloudflare.Environment}
+ * @extends {cloudflare.PageWorkerEnv}
  */
 const JoinEnv = function () { };
-
-/** @const {!cloudflare.KeyValue} */
-JoinEnv.prototype.KV;
 
 /** @const {string} */
 JoinEnv.prototype.DKIM_PRIVATE_KEY;
