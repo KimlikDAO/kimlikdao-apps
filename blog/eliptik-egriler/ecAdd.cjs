@@ -1,5 +1,5 @@
 const { fp } = require("./ecFp.cjs");
-const { Point } = require("../../lib/util/svg.cjs");
+const { Point } = require("../../lib/birimler/svg.cjs");
 
 exports.üret = (d) => {
   d.en = +d.width;

@@ -1,4 +1,4 @@
-const svgs = require("../../lib/util/svg.cjs");
+const svgs = require("../../lib/birimler/svg.cjs");
 
 exports.üret = (değerler) => {
   const height = değerler.height;
