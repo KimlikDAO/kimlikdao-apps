@@ -1,6 +1,6 @@
-import { devSunucu } from "../lib/util/sunucu.js";
+import { çalıştır } from "../lib/birimler/devSunucu.js";
 
-devSunucu({
+çalıştır({
   port: 1616,
   kök: "join",
   dizin: "",

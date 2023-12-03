@@ -1,6 +1,6 @@
 MAKEFLAGS := -j 8
 
-include tools/Makefile
+include lib/birimler/Makefile
 include birim/Makefile
 include bulten/Makefile
 include join/Makefile

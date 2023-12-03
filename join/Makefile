@@ -48,11 +48,11 @@ build/join/sayfa-%.css: birim/lato/l400.css \
     birim/tckt/birim.css
 	mkdir -p $(dir $@)
 	cat $(filter %.css,$^) | yarn csso --output $@
-	tools/keymapper.py $@ $(filter %.keymap,$^)
+	lib/birimler/keymapper.py $@ $(filter %.keymap,$^)
 
 build/join/sayfa-%.keymap: $(call compressions, build/join/sayfa-%.js build/join/sayfa-%.css)
 	mkdir -p $(dir $@) && > $@
-	tools/keyhasher.py $@ build/join/sayfa-$*.js build/join/sayfa-$*.css
+	node lib/birimler/hasher $@ build/join/sayfa-$*.js build/join/sayfa-$*.css
 
 build/join-%.html: join/sayfa.html \
     birim/başlık.birim \
@@ -67,9 +67,9 @@ build/join-%.html: join/sayfa.html \
     build/join/l700-%.keymap \
     build/join/sayfa-%.keymap
 	mkdir -p $(dir $@)
-	node tools/htmlProcessor $< $*
-	tools/keymapper.py $@ $(filter %.keymap,$^)
-	yarn html-minifier -c tools/html-minifier.conf $@ -o $@
+	node lib/birimler/işleyici $< $*
+	lib/birimler/keymapper.py $@ $(filter %.keymap,$^)
+	yarn html-minifier -c lib/birimler/htmlMinifierConfig.json $@ -o $@
 
 .PHONY: build/join.sayfa
 build/join.sayfa: $(call compressions,build/join-en.html build/join-tr.html)
@@ -104,14 +104,14 @@ build/join/prod.js: join/prod.js join/prod.d.js \
 
 .PHONY: join.cf-deployment
 join.cf-deployment: build/join.sayfa build/join/prod.js
-	tools/cfuploader.py join/prod.toml join/uploader.config
+	node lib/cloudflare/uploader join/prod.toml join/uploader.config
 	wrangler deploy \
         --config join/prod.toml \
         --compatibility-date $(shell date -v -1d +%Y-%m-%d)
 
 .PHONY: join.cf-trim
 join.cf-trim: join.cf-deployment
-	tools/cftrimmer.py join/prod.toml join/uploader.config
+	node lib/cloudflare/cftrimmer.py join/prod.toml join/uploader.config
 
 .PHONY: join.dev
 join.dev:
