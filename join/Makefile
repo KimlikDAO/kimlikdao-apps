@@ -28,11 +28,11 @@ build/join/sayfa-%.js: join/sayfa.js \
 	yarn uglifyjs $@ -m -c toplevel,unsafe -o $@
 	wc $@
 
-build/join/l400.keymap: build/birim/lato/l400.keymap
+build/join/l400.keymap: build/birim/lato/birim.keymap
 	mkdir -p $(dir $@)
 	sed 's# -> # -> //kimlikdao.org/#g' $< > $@
 
-build/join/l700-%.keymap: build/birim/lato/l700-%.keymap
+build/join/l700-%.keymap: build/birim/lato/birim-%.keymap
 	mkdir -p $(dir $@)
 	sed 's# -> # -> //kimlikdao.org/#g' $< > $@
 
@@ -50,25 +50,21 @@ build/join/sayfa-%.css: birim/lato/l400.css \
 	cat $(filter %.css,$^) | yarn csso --output $@
 	lib/birimler/keymapper.py $@ $(filter %.keymap,$^)
 
-build/join/sayfa-%.keymap: $(call compressions, build/join/sayfa-%.js build/join/sayfa-%.css)
+build/join/sayfa-%.keymap: build/join/l700-%.keymap \
+    build/join/l400.keymap \
+    $(call compressions, build/join/sayfa-%.js build/join/sayfa-%.css)
 	mkdir -p $(dir $@) && > $@
 	node lib/birimler/hasher $@ build/join/sayfa-$*.js build/join/sayfa-$*.css
+	cat $< build/join/l400.keymap >> $@
 
 build/join-%.html: join/sayfa.html \
+    build/join/sayfa-%.keymap \
     birim/başlık.birim \
     birim/favicon.birim \
-    birim/lato.birim \
-    birim/tckt.birim \
-    build/birim/cüzdan/birim.keymap \
-    build/birim/dil/birim.keymap \
-    build/birim/favicon/birim.keymap \
-    build/birim/tckt/birim.keymap \
-    build/join/l400.keymap \
-    build/join/l700-%.keymap \
-    build/join/sayfa-%.keymap
+    birim/lato-%.birim \
+    birim/tckt.birim
 	mkdir -p $(dir $@)
 	node lib/birimler/işleyici $< $*
-	lib/birimler/keymapper.py $@ $(filter %.keymap,$^)
 	yarn html-minifier -c lib/birimler/htmlMinifierConfig.json $@ -o $@
 
 .PHONY: build/join.sayfa
