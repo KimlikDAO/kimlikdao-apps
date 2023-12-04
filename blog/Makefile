@@ -1,10 +1,15 @@
-
+include blog/sunucu/Makefile
 include blog/dizin/Makefile
 include blog/eliptik-egriler/Makefile
 include blog/eliptik-imza/Makefile
 
-.PHONY: blog.dev
 blog.dev:
 	node blog/sunucu/dev.js
 
-.PHONY: blog.cf-deployment
+blog.cf-deployment: build/blog/sunucu/prod.js build/blog/dizin.sayfa
+	node lib/cloudflare/uploader blog/sunucu/prod.toml blog/sunucu/Makefile
+	wrangler deploy \
+	      --config blog/sunucu/prod.toml \
+	      --compatibility-date $(shell date -v -1d +%Y-%m-%d)
+
+.PHONY: blog.dev blog.cf-deployment

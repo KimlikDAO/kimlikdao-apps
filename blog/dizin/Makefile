@@ -23,3 +23,32 @@ build/blog/dizin/sayfa-%.js: blog/dizin/sayfa.js \
                              --js $^ \
                              --js_output_file $@
 	yarn uglifyjs $@ -m -c toplevel,unsafe -o $@
+	wc $@
+
+build/blog/dizin/sayfa-%.css: blog/dizin/sayfa.css \
+    build/birim/lato/l400.css \
+    build/birim/lato/l700-%.css \
+    blog/ortak.css \
+		birim/ortak.css \
+		birim/başlık/birim.css \
+    birim/cüzdan/birim.css \
+    birim/dil/birim.css
+	mkdir -p $(dir $@)
+	cat $^ | yarn csso --output $@
+
+build/blog/dizin/sayfa-%.keymap: \
+    $(call compressions, build/blog/dizin/sayfa-%.js) \
+		$(call compressions, build/blog/dizin/sayfa-%.css)
+	mkdir -p $(dir $@) && > $@
+	node lib/birimler/hasher $@ build/blog/dizin/sayfa-$*.js build/blog/dizin/sayfa-$*.css
+	cat $< >> $@
+
+build/blog/dizin-%.html: blog/dizin/sayfa.html \
+    build/blog/dizin/sayfa-%.keymap \
+		birim/başlık.birim \
+		birim/lato-%.birim \
+		build/blog/eliptik-imza/banner.svg.inl
+	node lib/birimler/işleyici $< $*
+	yarn html-minifier -c lib/birimler/htmlMinifierConfig.json $@ -o $@
+
+build/blog/dizin.sayfa: $(call compressions,build/blog/dizin-en.html build/blog/dizin-tr.html)

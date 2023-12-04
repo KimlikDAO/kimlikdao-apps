@@ -45,7 +45,7 @@
     <use x="48" y="48" href="#blr" height="250" width="250" filter="url(#gölge)" />
     <use x="24" y="24" href="#blr" height="250" width="250" filter="url(#gölge)" />
     <g filter="url(#gölge)">
-      <image id="blr" xlink:href="/birim/tckt/kapak.svg" height="250" width="250" clip-path="url(#yuvarla)" />
+      <image id="blr" href="/birim/tckt/kapak.svg" height="250" width="250" clip-path="url(#yuvarla)" />
     </g>
   </g>
 </svg>
