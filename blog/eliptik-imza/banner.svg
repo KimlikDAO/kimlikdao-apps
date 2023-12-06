@@ -41,11 +41,11 @@
     fill="url(#açıkmor)" />
   <circle cx="-205" cy="115" style="mix-blend-mode:color-dodge" filter="url(#ddd)" fill="url(#mavi)" r="415" />
   <g transform="translate(90,20)">
-    <use x="72" y="72" href="#blr" height="250" width="250" filter="url(#gölge)" />
-    <use x="48" y="48" href="#blr" height="250" width="250" filter="url(#gölge)" />
-    <use x="24" y="24" href="#blr" height="250" width="250" filter="url(#gölge)" />
-    <g filter="url(#gölge)">
-      <image id="blr" href="/birim/tckt/kapak.svg" height="250" width="250" clip-path="url(#yuvarla)" />
+    <use x="72" y="72" href="#blr" height="250" width="250" />
+    <use x="48" y="48" href="#blr" height="250" width="250" />
+    <use x="24" y="24" href="#blr" height="250" width="250" />
+    <g id="blr" filter="url(#gölge)">
+      <image href="/birim/tckt/kapak.svg" height="250" width="250" clip-path="url(#yuvarla)" />
     </g>
   </g>
 </svg>

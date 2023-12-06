@@ -41,13 +41,13 @@ build/blog/dizin/sayfa-%.keymap: \
 		$(call compressions, build/blog/dizin/sayfa-%.css)
 	mkdir -p $(dir $@) && > $@
 	node lib/birimler/hasher $@ build/blog/dizin/sayfa-$*.js build/blog/dizin/sayfa-$*.css
-	cat $< >> $@
 
 build/blog/dizin-%.html: blog/dizin/sayfa.html \
     build/blog/dizin/sayfa-%.keymap \
+		build/blog/eliptik-imza/banner.keymap \
 		birim/başlık.birim \
 		birim/lato-%.birim \
-		build/blog/eliptik-imza/banner.svg.inl
+		build/blog/eliptik-imza/banner.isvg
 	node lib/birimler/işleyici $< $*
 	yarn html-minifier -c lib/birimler/htmlMinifierConfig.json $@ -o $@
 
