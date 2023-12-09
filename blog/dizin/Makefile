@@ -29,6 +29,8 @@ build/blog/dizin/sayfa-%.js: blog/dizin/sayfa.js \
 build/blog/dizin/sayfa-%.css: blog/dizin/sayfa.css \
     build/birim/lato/l400.css \
     build/birim/lato/l700-%.css \
+    build/join/l400.keymap \
+    build/join/l700-%.keymap \
     blog/ortak.css \
 		birim/ortak.css \
 		birim/başlık/birim.css \
@@ -36,6 +38,7 @@ build/blog/dizin/sayfa-%.css: blog/dizin/sayfa.css \
     birim/dil/birim.css
 	mkdir -p $(dir $@)
 	cat $^ | yarn csso --output $@
+	lib/birimler/keymapper.py $@ $(filter %.keymap,$^)
 
 build/birim/paralar/DOBBY.png: birim/paralar/DOBBY.png
 	pngcrush -brute $< $@

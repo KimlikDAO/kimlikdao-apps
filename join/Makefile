@@ -2,6 +2,7 @@ join-en := "?en"
 join-tr := "?tr"
 
 build/join/sayfa-%.js: join/sayfa.js \
+    birim/ağlar/*.js \
     birim/cüzdan/*.js \
     birim/dil/birim.js \
     birim/tckt/birim.js \
@@ -64,8 +65,8 @@ build/join-%.html: join/sayfa.html \
 	node lib/birimler/işleyici $< $*
 	yarn html-minifier -c lib/birimler/htmlMinifierConfig.json $@ -o $@
 
-.PHONY: build/join.sayfa
-build/join.sayfa: $(call compressions,build/join-en.html build/join-tr.html)
+.PHONY: join.sayfa
+join.sayfa: $(call compressions,build/join-en.html build/join-tr.html)
 
 build/join/prod.js: join/prod.js join/prod.d.js \
     join/başvuru.d.js join/başvuru.js \
@@ -96,7 +97,7 @@ build/join/prod.js: join/prod.js join/prod.d.js \
 	wc $@
 
 .PHONY: join.cf-deployment
-join.cf-deployment: build/join.sayfa build/join/prod.js
+join.cf-deployment: join.sayfa build/join/prod.js
 	node lib/cloudflare/uploader join/prod.toml join/uploader.config
 	wrangler deploy \
         --config join/prod.toml \
