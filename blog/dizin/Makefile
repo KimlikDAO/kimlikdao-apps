@@ -4,6 +4,7 @@ dizin-tr := "?tr"
 build/blog/dizin/sayfa-%.js: blog/dizin/sayfa.js \
     birim/cüzdan/*.js \
 		birim/dil/birim.js \
+		lib/api/jsonrpc.d.js lib/api/jsonrpc.js \
 		lib/crosschain/unlockable.d.js \
 		lib/crosschain/provider.js lib/crosschain/signer.js \
 		lib/did/*.d.js \
@@ -36,16 +37,24 @@ build/blog/dizin/sayfa-%.css: blog/dizin/sayfa.css \
 	mkdir -p $(dir $@)
 	cat $^ | yarn csso --output $@
 
-build/blog/dizin/sayfa-%.keymap: \
+build/birim/paralar/DOBBY.png: birim/paralar/DOBBY.png
+	pngcrush -brute $< $@
+
+build/blog/dizin/sayfa-%.keymap: build/blog/eliptik-egriler/banner.keymap \
     $(call compressions, build/blog/dizin/sayfa-%.js) \
-		$(call compressions, build/blog/dizin/sayfa-%.css)
+		$(call compressions, build/blog/dizin/sayfa-%.css) \
+		build/birim/paralar/DOBBY.png
 	mkdir -p $(dir $@) && > $@
-	node lib/birimler/hasher $@ build/blog/dizin/sayfa-$*.js build/blog/dizin/sayfa-$*.css
+	node lib/birimler/hasher $@ build/blog/dizin/sayfa-$*.js build/blog/dizin/sayfa-$*.css \
+	                         --nocompress build/birim/paralar/DOBBY.png
+	cat $< >> $@
 
 build/blog/dizin-%.html: blog/dizin/sayfa.html \
     build/blog/dizin/sayfa-%.keymap \
 		build/blog/eliptik-imza/banner.keymap \
+		build/birim/paralar/USDT.isvg \
 		birim/başlık.birim \
+		birim/favicon.birim \
 		birim/lato-%.birim \
 		build/blog/eliptik-imza/banner.isvg
 	node lib/birimler/işleyici $< $*

@@ -4,47 +4,73 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title data-en="KimlikDAO | Blog">KimlikDAO | Blog</title>
+  <title>KimlikDAO | Blog</title>
   <birim:lato />
   <link href="/birim/ortak.css" rel="stylesheet" type="text/css" data-remove />
   <link href="/blog/ortak.css" rel="stylesheet" type="text/css" data-remove />
   <link href="/blog/dizin/sayfa.css" rel="stylesheet" type="text/css" />
+  <birim:favicon data-piggyback="//kimlikdao.org/" />
 </head>
 
 <body>
-  <birim:başlık data-title="KimlikDAO blog" />
+  <birim:başlık data-title="KimlikDAO blog" data-link="//kimlikdao.org" />
   <div id="diz">
     <a data-en-href="/ecdsa" href="/eliptik-imza" class="dip">
-      <img src="/blog/eliptik-imza/banner.svg" class="dipp" data-inline>
-      <h4>Eliptik eğri imza algoritması</h4>
-      <div class="diza">
-        <svg width="20" height="20">
-          <circle cx="10" cy="10" r="10" fill="none" stroke="#ddd" stroke-width="0.5" />s
-          <use href="#bak" width="16" height="16" x="3.5" y="2" />
-        </svg>
-        <b class="dizan" data-en="KimlikDAO learn & earn">KimlikDAO öğren & kazan</b>
+      <div>
+        <img src="/blog/eliptik-imza/banner.svg" class="dipp" data-inline>
+        <h4 data-en="Elliptic curve digital signature algorithm">Eliptik eğri imza algoritması</h4>
+        <div class="diza">
+          <svg width="20" height="20">
+            <circle cx="10" cy="10" r="10" fill="none" stroke="#ddd" stroke-width="0.5" />s
+            <use href="#bak" width="16" height="16" x="3.5" y="2" />
+          </svg>
+          <b class="dizan" data-en="KimlikDAO learn & earn">KimlikDAO öğren & kazan</b>
+        </div>
+        <div class="dizy"
+          data-en="Cryptocurrencies such as Bitcoin and Ether can only be spent by their owners thanks to ECDSA (elliptic curve digital signature algorithm). In this article, we’ll construct ECDSA by starting from a simple prover-challenger game and gradually extending it. We assume some familiarity with elliptic curves.">
+          Bitcoin ve Ethereum gibi kripto paraların sadece sahibi tarafından harcanabilmesini ECDSA sağlıyor.
+          ECDSA’yı iki kişinin oynadığı bir kanıtlama oyunuyla başlayıp adım adım
+          ilerleyerek oluşturacağız. Temel eliptik eğri bilgisi gerektirir.
+        </div>
       </div>
-      <div class="dizy">
-        İki kişinin oynadığı bir kanıtlama oyunuyla başlayıp adım adım ilerleyerek ECDSA algoritmasına
-        ulaşacağız. Temel eliptik eğri bilgisi gerektirir.
+      <div class="dipf">
+        <div class="dipc usdt">
+          <div class="dipi usdt" style="width:180px"></div>
+          <div class="dipit">
+            <img src="/birim/paralar/USDT.svg" data-inline width="22" height="22" /> 
+            <span id="diei">5000</span>/5000 USDT</span>
+          </div>
+        </div>
+        <button class="dipb dipu" data-en="Read">Oku</button>
       </div>
-      <button class="dipb dipu">Oku</button>
     </a>
     <a data-en-href="/elliptic-curves" href="/eliptik-egriler" class="dip">
-      <img src="/blog/eliptik-egriler/banner.webp" class="dipp">
-      <h4>Eliptik eğriler ve kriptoda kullanımı</h4>
-      <div class="diza">
-        <svg width="20" height="20">
-          <circle cx="10" cy="10" r="10" fill="none" stroke="#ddd" stroke-width="0.5" />s
-          <use href="#bak" width="16" height="16" x="3.5" y="2" />
-        </svg>
-        <b class="dizan" data-en="KimlikDAO learn & earn">KimlikDAO öğren & kazan</b>
+      <div>
+        <img src="/blog/eliptik-egriler/banner.webp" class="dipp" width="100%">
+        <h4 data-en="Elliptic curves and their applications in crypto">Eliptik eğriler ve kriptoda kullanımı</h4>
+        <div class="diza">
+          <svg width="20" height="20">
+            <circle cx="10" cy="10" r="10" fill="none" stroke="#ddd" stroke-width="0.5" />s
+            <use href="#bak" width="16" height="16" x="3.5" y="2" />
+          </svg>
+          <b class="dizan" data-en="KimlikDAO learn & earn">KimlikDAO öğren & kazan</b>
+        </div>
+        <div class="dizy"
+          data-en="Elliptic curves are one of the most important primitives in modern cryptography. This article will delve into elliptic curves, with a special emphasis on the properties used in digital signatures. No previous knowledge of the subject is assumed.">
+          Modern kriptografinin temel yapıtaşlarında biri olan eliptik eğrileri sıfırdan
+          ele alıp dijital imzaların oluşturulmasında kullanılan özelliklerini inceleyeceğiz.
+        </div>
       </div>
-      <div class="dizy">
-        Modern kriptografinin en temel yapıtaşlarında biri olan eliptik eğrileri sıfırdan
-        ele alıp, dijital imzaların oluşturulmasında kullanılan özelliklerini inceleyeceğiz.
+      <div class="dipf">
+        <div class="dipc dobby">
+          <div class="dipi dobby" style="width:180px"></div>
+          <div class="dipit">
+            <img src="/birim/paralar/DOBBY.png" width="22" height="22" id="didoi" /> 
+            <span id="diee">50000</span>/<span data-phantom data-en="50,000">50.000</span> DOBBY</span>
+          </div>
+        </div>
+        <button class="dipb dipg" data-en="Read">Oku</button>
       </div>
-      <button class="dipb dipg">Oku</button>
     </a>
   </div>
 
