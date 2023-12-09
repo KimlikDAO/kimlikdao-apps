@@ -46,7 +46,7 @@ build/blog/dizin/sayfa-%.keymap: build/blog/eliptik-egriler/banner.keymap \
 		build/birim/paralar/DOBBY.png
 	mkdir -p $(dir $@) && > $@
 	node lib/birimler/hasher $@ build/blog/dizin/sayfa-$*.js build/blog/dizin/sayfa-$*.css \
-	                         --nocompress build/birim/paralar/DOBBY.png
+	                         build/birim/paralar/DOBBY.png
 	cat $< >> $@
 
 build/blog/dizin-%.html: blog/dizin/sayfa.html \

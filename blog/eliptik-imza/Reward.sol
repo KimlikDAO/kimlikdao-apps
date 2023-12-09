@@ -2,6 +2,8 @@
 
 pragma solidity 0.8.23;
 
+import {Signature, validateHumanID} from "@kimlikdao-sdk/SimpleValidator.sol";
+
 interface IERC20 {
     function transferFrom(
         address from,
@@ -14,11 +16,6 @@ interface IERC20 {
 IERC20 constant USDT = IERC20(0xFd086bC7CD5C481DCC9C85ebE478A1C0b69FCbb9);
 
 contract Reward {
-    struct Signature {
-        bytes32 r;
-        uint256 yParityAndS;
-    }
-
     mapping(bytes32 => uint256) public given;
 
     /**
@@ -34,27 +31,7 @@ contract Reward {
         bytes32 commitmentR
     ) external {
         require(given[humanID] == 0);
-        bytes32 digest = keccak256(
-            abi.encode(
-                uint256(bytes32("\x19KimlikDAO hash\n")) | timestamp,
-                keccak256(abi.encodePacked(commitmentR, msg.sender)),
-                humanID
-            )
-        );
-        address signer = ecrecover(
-            digest,
-            uint8(sig.yParityAndS >> 255) + 27,
-            sig.r,
-            bytes32(sig.yParityAndS & ((1 << 255) - 1))
-        );
-        require(
-            // node.kimlikdao.org
-            signer == 0x299A3490c8De309D855221468167aAD6C44c59E0 ||
-                // kdao-node.yenibank.org
-                signer == 0x86f6B34A26705E6a22B8e2EC5ED0cC5aB3f6F828 ||
-                // kdao-node.lstcm.co
-                signer == 0x384bF113dcdF3e7084C1AE2Bb97918c3Bf15A6d2
-        );
+        validateHumanID(humanID, timestamp, sig, commitmentR);
         given[humanID] = block.timestamp;
         USDT.transferFrom(
             0x79883D9aCBc4aBac6d2d216693F66FcC5A0BcBC1,

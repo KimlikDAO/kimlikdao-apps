@@ -1,0 +1,3 @@
+[profile.default]
+src = "eliptik-imza"
+remappings = ["@kimlikdao-sdk/=../sdk/evm/"]
