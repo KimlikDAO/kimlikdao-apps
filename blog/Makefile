@@ -6,7 +6,7 @@ include blog/eliptik-imza/Makefile
 blog.dev:
 	node blog/sunucu/dev.js
 
-blog.cf-deployment: build/blog/sunucu/prod.js build/blog/dizin.sayfa
+blog.cf-deployment: build/blog/sunucu/prod.js blog/dizin.sayfa
 	node lib/cloudflare/uploader blog/sunucu/prod.toml blog/sunucu/Makefile
 	wrangler deploy \
 	      --config blog/sunucu/prod.toml \

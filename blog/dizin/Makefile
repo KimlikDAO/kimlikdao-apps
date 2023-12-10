@@ -2,9 +2,11 @@ dizin-en := "?en"
 dizin-tr := "?tr"
 
 build/blog/dizin/sayfa-%.js: blog/dizin/sayfa.js \
+    birim/ağlar/*.js \
+    birim/blog/*/*.js \
     birim/cüzdan/*.js \
-		birim/dil/birim.js \
-		lib/api/jsonrpc.d.js lib/api/jsonrpc.js \
+    birim/dil/birim.js \
+    lib/api/jsonrpc.d.js lib/api/jsonrpc.js \
 		lib/crosschain/unlockable.d.js \
 		lib/crosschain/provider.js lib/crosschain/signer.js \
 		lib/did/*.d.js \
@@ -27,40 +29,36 @@ build/blog/dizin/sayfa-%.js: blog/dizin/sayfa.js \
 	wc $@
 
 build/blog/dizin/sayfa-%.css: blog/dizin/sayfa.css \
-    build/birim/lato/l400.css \
-    build/birim/lato/l700-%.css \
+    birim/lato/l400.css \
+    birim/lato/l700.css \
     build/join/l400.keymap \
     build/join/l700-%.keymap \
     blog/ortak.css \
-		birim/ortak.css \
-		birim/başlık/birim.css \
+    birim/blog/birim.css \
+    birim/blog/eliptik-egriler/birim.css \
+    birim/blog/eliptik-imza/birim.css \
+    birim/ortak.css \
+    birim/başlık/birim.css \
     birim/cüzdan/birim.css \
     birim/dil/birim.css
 	mkdir -p $(dir $@)
-	cat $^ | yarn csso --output $@
+	cat $(filter %.css,$^) | yarn csso --output $@
 	lib/birimler/keymapper.py $@ $(filter %.keymap,$^)
 
-build/birim/paralar/DOBBY.png: birim/paralar/DOBBY.png
-	pngcrush -brute $< $@
-
-build/blog/dizin/sayfa-%.keymap: build/blog/eliptik-egriler/banner.keymap \
+build/blog/dizin/sayfa-%.keymap: \
     $(call compressions, build/blog/dizin/sayfa-%.js) \
-		$(call compressions, build/blog/dizin/sayfa-%.css) \
-		build/birim/paralar/DOBBY.png
+		$(call compressions, build/blog/dizin/sayfa-%.css)
 	mkdir -p $(dir $@) && > $@
-	node lib/birimler/hasher $@ build/blog/dizin/sayfa-$*.js build/blog/dizin/sayfa-$*.css \
-	                         build/birim/paralar/DOBBY.png
-	cat $< >> $@
+	node lib/birimler/hasher $@ build/blog/dizin/sayfa-$*.js build/blog/dizin/sayfa-$*.css
 
 build/blog/dizin-%.html: blog/dizin/sayfa.html \
     build/blog/dizin/sayfa-%.keymap \
-		build/blog/eliptik-imza/banner.keymap \
-		build/birim/paralar/USDT.isvg \
-		birim/başlık.birim \
-		birim/favicon.birim \
-		birim/lato-%.birim \
-		build/blog/eliptik-imza/banner.isvg
+    birim/başlık.birim \
+    birim/blog/eliptik-imza.birim \
+    birim/blog/eliptik-egriler.birim \
+    birim/favicon.birim \
+    birim/lato-%.birim
 	node lib/birimler/işleyici $< $*
 	yarn html-minifier -c lib/birimler/htmlMinifierConfig.json $@ -o $@
 
-build/blog/dizin.sayfa: $(call compressions,build/blog/dizin-en.html build/blog/dizin-tr.html)
+blog/dizin.sayfa: $(call compressions,build/blog/dizin-en.html build/blog/dizin-tr.html)

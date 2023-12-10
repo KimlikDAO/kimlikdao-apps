@@ -1,7 +1,7 @@
 import { çalıştır } from "../lib/birimler/devSunucu.js";
 
 çalıştır({
-  port: 1616,
+  port: 8787,
   kök: "join",
   dizin: "",
   sayfalar: []
