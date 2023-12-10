@@ -2,7 +2,7 @@
 
 pragma solidity 0.8.23;
 
-import {Signature, validateHumanID} from "@kimlikdao-sdk/SimpleValidator.sol";
+import {Signature, validateHumanID} from "@kimlikdao/SimpleValidator.sol";
 
 interface IERC20 {
     function transferFrom(
