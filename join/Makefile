@@ -109,4 +109,4 @@ join.cf-trim: join.cf-deployment
 
 .PHONY: join.dev
 join.dev:
-	node join/dev.js
+	node lib/birimler/devSunucu --çalıştır join/dev.toml

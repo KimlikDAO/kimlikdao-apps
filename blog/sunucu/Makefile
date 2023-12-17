@@ -20,3 +20,14 @@ build/blog/sunucu/prod.js: blog/sunucu/prod.js \
 	yarn uglifyjs $@ -m -c toplevel,unsafe,drop_console -o $@
 	sed -i.bak 's/globalThis.BlogWorker=/export default/g' $@
 	wc $@
+
+blog.dev:
+	node lib/birimler/devSunucu --çalıştır blog/sunucu/dev.toml
+
+blog.cf-deployment: build/blog/sunucu/prod.js blog/dizin.sayfa
+	node lib/cloudflare/uploader blog/sunucu/prod.toml blog/sunucu/Makefile
+	wrangler deploy \
+	      --config blog/sunucu/prod.toml \
+	      --compatibility-date $(shell date -v -1d +%Y-%m-%d)
+
+.PHONY: blog.dev blog.cf-deployment

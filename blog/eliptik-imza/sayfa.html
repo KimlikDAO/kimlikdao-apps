@@ -26,11 +26,34 @@
       <b class="blan" data-en="KimlikDAO learn & earn">KimlikDAO öğren & kazan</b>
       <div class="blusdt">5 USDT kazan</div>
     </div>
-    Eliptik eğrileri kullanarak dijital imza atmanın birden çok yolu var. Biz bu yazıda ECDSA protokolünü ele alacağız.
-    ECDSA protokolü ilk bakışta biraz karışık ve sebebi anlaşılmaz seçimler içeriyor gibi görünebilir. Biz bu sebepsiz
-    gibi görünen ama aslında çok yerinde olan seçimleri detaylıca anlamak için ilk olarak kolay bir “bildiğini
-    kanıtlama”
-    oyunuyla başlayıp adım adım bu protokolden bir imza protokolü elde edeceğiz.
+    <div data-latex data-phantom>
+      Eliptik eğrileri kullanarak dijital imza atmanın birden çok yolu var. Biz bu yazıda ECDSA protokolünü ele
+      alacağız.
+      ECDSA protokolü ilk bakışta biraz karışık ve sebebi anlaşılmaz seçimler içeriyor gibi görünebilir. Biz bu sebepsiz
+      gibi görünen ama aslında çok yerinde olan seçimleri detaylıca anlamak için ilk olarak kolay bir “bildiğini
+      kanıtlama” oyunuyla başlayıp adım adım bu protokolden bir imza protokolü elde edeceğiz.
+
+      <h2>Bildiğini kanıtlama oyunu</h2>
+      Arkadaşımız Ayşe bize “öyle bir sayı biliyorum ki, $G$’yi bu sayıyla çarpınca $A$ ediyor” diye iddia ediyor. Bize
+      $A$ noktasını söylemesine rağmen, $A$’ya bakıp $a\cdot G =A$ denklemini sağlayan bir $a$’yı kolayca bulamıyoruz çünkü
+      eliptik eğrilerde noktayı noktaya bölme çok çok zor bir işlem. (Bitcoin ve Ether’lerin sadece sahibi tarafından
+      harcanabilmesi bu zorluğa dayanıyor)
+      <p>
+      Ayşe’nin böyle bir sayıyı bildiğini kanıtlamasının en kolay yolu bildiği sayı $a$’yı bize olduğu gibi yollaması:
+      biz
+      Ayşenin yolladığı sayı $a$’yı G ile çarpıp $A$ edip etmediğini onaylayabiliriz.
+      <p>
+      Peki ya Ayşe $a$’yı gizli tutmak istiyorsa? Ayşe $a$’yı gizli tutarak böyle bir sayı bildiğini kanıtlayabilir mi?
+      Ayşe’nin $a$’yı bildiğinin diğer bir göstergesi $a$’yı kullanarak bizim istediğimiz bir hesaplamayı yapabilmesi.
+      Eğer Ayşe’ye yeterince zor bir hesaplama sorarsak $a$’yı biliyorsa bu hesaplamayı gerçekleştirebilmesi, eğer
+      bilmiyorsa gerçekleştirememesi lazım.
+      <p>
+      Daha da ötesi, bu hesaplama sonucundan bizim $a$’yı öğrenememizi şöyle sağlayabilir. Önce rastgele bir $k\in
+      \field_n$ seçip $K = k\cdot G$’yi hesaplayıp $K$’yi bize yollar. Ayşe bu $k$’yi “şifreleme“ için kullanacak ve
+      $K$’yi de bize “şifreyi açabilmemiz için” veriyor. Ayşe’ye sorduğumuz hesaplamaya $h(a)$ dersek, Ayşe $h(a)$’yı
+      yollamak yerine bize $s=h(a)/k$’yı yollayacak. Biz de $s\cdot K=h(a)\cdot G$ mı diye sınamayı ümidedebiliriz. Eğer
+      $h(a)$’nın denklemi $a$’yı doğrusal olarak içeriyorsa, örneğin $h(a) = ax + y$ gibi, o zaman
+    </div>
   </div>
   <script async type="module" src="/blog/eliptik-egriler/sayfa.js" data-remove-type></script>
 </body>
