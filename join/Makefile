@@ -96,17 +96,16 @@ build/join/prod.js: join/prod.js join/prod.d.js \
 	sed -i.bak 's/globalThis.JoinWorker=/export default/g' $@
 	wc $@
 
-.PHONY: join.cf-deployment
+join.dev:
+	node lib/birimler/devSunucu --çalıştır join/dev.toml
+
+join.kanarya: join.sayfa
+	node lib/birimler/kanaryaSunucu --çalıştır join/dev.toml
+
 join.cf-deployment: join.sayfa build/join/prod.js
 	node lib/cloudflare/uploader join/prod.toml join/uploader.config
 	wrangler deploy \
         --config join/prod.toml \
         --compatibility-date $(shell date -v -1d +%Y-%m-%d)
 
-.PHONY: join.cf-trim
-join.cf-trim: join.cf-deployment
-	node lib/cloudflare/cftrimmer.py join/prod.toml join/uploader.config
-
-.PHONY: join.dev
-join.dev:
-	node lib/birimler/devSunucu --çalıştır join/dev.toml
+.PHONY: join.dev join.kanarya join.cf-deployment

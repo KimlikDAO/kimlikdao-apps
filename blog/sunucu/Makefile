@@ -24,6 +24,9 @@ build/blog/sunucu/prod.js: blog/sunucu/prod.js \
 blog.dev:
 	node lib/birimler/devSunucu --çalıştır blog/sunucu/dev.toml
 
+blog.kanarya: blog/dizin.sayfa
+	node lib/birimler/kanaryaSunucu --çalıştır blog/sunucu/dev.toml
+
 blog.cf-deployment: build/blog/sunucu/prod.js blog/dizin.sayfa
 	node lib/cloudflare/uploader blog/sunucu/prod.toml blog/sunucu/Makefile
 	wrangler deploy \

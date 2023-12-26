@@ -47,13 +47,15 @@ build/blog/dizin/sayfa-%.css: blog/dizin/sayfa.css \
 
 build/blog/dizin/sayfa-%.keymap: \
     $(call compressions, build/blog/dizin/sayfa-%.js) \
-		$(call compressions, build/blog/dizin/sayfa-%.css)
+    $(call compressions, build/blog/dizin/sayfa-%.css)
 	mkdir -p $(dir $@) && > $@
 	node lib/birimler/hasher $@ build/blog/dizin/sayfa-$*.js build/blog/dizin/sayfa-$*.css
 
 build/blog/dizin-%.html: blog/dizin/sayfa.html \
     build/blog/dizin/sayfa-%.keymap \
     birim/başlık.birim \
+    birim/blog/2023.12.birim \
+    birim/blog/2024.01.birim \
     birim/blog/eliptik-imza.birim \
     birim/blog/eliptik-egriler.birim \
     birim/favicon.birim \

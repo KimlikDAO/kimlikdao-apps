@@ -1,9 +1,9 @@
 .DS_Store
 .gizli
 .vscode
+*.lock*
 *.vars
+blog/cache
+blog/out
 build
 node_modules
-yarn.lock
-blog/out
-blog/cache
