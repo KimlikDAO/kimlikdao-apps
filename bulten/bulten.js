@@ -5,9 +5,10 @@ const URL = "https://bulten.kimlikdao.org/";
 
 /** @const {!Array<string>} */
 const AyAdları = [
-  "Ocak", "Şubat", "Mart", "Nisan",
-  "Mayıs", "Haziran", "Temmuz", "Ağustos",
-  "Eylül", "Ekim", "Kasım", "Aralık"
+  "Ocak", "Şubat", "Mart",
+  "Nisan", "Mayıs", "Haziran",
+  "Temmuz", "Ağustos", "Eylül",
+  "Ekim", "Kasım", "Aralık"
 ];
 
 /**
@@ -39,9 +40,9 @@ const tamam = () => new Response("👍", {
  */
 const çıkSayfası = (anahtar) => new Response(
   '<!doctypehtml><html lang=tr><meta charset=utf-8>' +
-  `<form id=f method="post" action="/${anahtar}">` +
-  '<button type="submit" name="List-Unsubscribe" value="One-Click" alt="Unsubscribe">Abonelikten çık</button>' +
-  "</form>" /* + "<script>setTimeout(()=>document.getElementById('f').submit(),5000)</script>" */, {
+  `<form method="post" action="/${anahtar}">` +
+  '<button id=b type="submit" name="List-Unsubscribe" value="One-Click" alt="Unsubscribe">Abonelikten çık</button>' +
+  "</form><script>setTimeout(()=>document.getElementById('b').click(),5000)</script>", {
   headers: { "content-type": "text/html;charset=utf-8" }
 });
 
@@ -90,22 +91,25 @@ const Bulten = {
         .then((/** @type {!cloudflare.KeyValueList} */ res) => Response.json(res.keys));
 
     if (path == "yolla")
-      return this.yolla(env);
+      return this.yolla(req, env);
 
     return tamam();
   },
 
   /**
+   * @param {!Request} req
    * @param {!BultenEnv} env
    * @return {!Promise<!Response>}
    */
-  async yolla(env) {
+  async yolla(req, env) {
     /** @const {string} */
     const dkimPrivateKey = env.DKIM_PRIVATE_KEY;
     /** @const {!Date} */
     const tarih = new Date();
     /** @const {string} */
-    const ay = AyAdları[tarih.getMonth()] + " " + tarih.getFullYear();
+    const sayı = AyAdları[tarih.getMonth()] + " " + tarih.getFullYear();
+    /** @const {string} */
+    const içerik = await req.text();
     /** @const {!cloudflare.KeyValueList} */
     const kayıtlar = await env.KV.list();
     /** @const {!Object<string, !Object>} */
@@ -134,10 +138,10 @@ const Bulten = {
           "List-Unsubscribe": `<mailto:${anahtar}@kimlikdao.net>, <https://bulten.kimlikdao.org/${anahtar}>`,
           "List-Unsubscribe-Post": "List-Unsubscribe=One-Click",
         },
-        "subject": `🗞️ KimlikDAO gelişmeler | ${ay}`,
+        "subject": `🗞️ KimlikDAO bülten | ${sayı}`,
         "content": [{
           "type": "text/html;charset=utf-8",
-          "value": "KimlikDAO aylık bülten " +
+          "value": içerik.replaceAll("{}", anahtar) +
             `<a href="https://bulten.kimlikdao.org/cik/${anahtar}" target=_blank rel=noopener>Abonelikten çık</a>`
         }]
       });

@@ -3,7 +3,6 @@ account_id = "8f0c2f2271ff857947d9a5b2c38595a0"
 main = "../build/bulten/bulten.js"
 name = "kimlikdao-bulten"
 route = { pattern = "bulten.kimlikdao.org", custom_domain = true }
-usage_model = "unbound"
 
 workers_dev = false
 no_bundle = true
