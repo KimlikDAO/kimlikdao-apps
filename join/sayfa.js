@@ -1,6 +1,7 @@
 import Cüzdan from "/birim/cüzdan/birim";
-import Tckt from "/birim/tckt/birim";
 import "/birim/dil/birim";
+import { kur as kaydolKur } from "/birim/kaydol/birim";
+import Tckt from "/birim/tckt/birim";
 import { TCKT_ADDR } from "/lib/ethereum/TCKTLite";
 import dom from "/lib/util/dom";
 import { getValidationRequest } from "/sdk/client";
@@ -279,3 +280,4 @@ const kur = () => {
 }
 
 kur();
+kaydolKur("kay");

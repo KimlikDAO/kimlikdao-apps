@@ -5,6 +5,7 @@ build/join/sayfa-%.js: join/sayfa.js \
     birim/ağlar/*.js \
     birim/cüzdan/*.js \
     birim/dil/birim.js \
+    birim/kaydol/birim.js \
     birim/tckt/birim.js \
     lib/crosschain/*.js \
     lib/crypto/*.js \
@@ -46,6 +47,7 @@ build/join/sayfa-%.css: birim/lato/l400.css \
     birim/başlık/birim.css \
     birim/cüzdan/birim.css \
     birim/dil/birim.css \
+    birim/kaydol/birim.css \
     birim/tckt/birim.css
 	mkdir -p $(dir $@)
 	cat $(filter %.css,$^) | yarn csso --output $@
@@ -59,6 +61,7 @@ build/join-%.html: join/sayfa.html \
     build/join/sayfa-%.keymap \
     birim/başlık.birim \
     birim/favicon.birim \
+    birim/kaydol.birim \
     birim/lato-%.birim \
     birim/tckt.birim
 	mkdir -p $(dir $@)
