@@ -19,6 +19,7 @@ const AyAdları = [
 const emailAnahtarı = (email, hashSalt) => {
   /** @const {Array<string>} */
   const bölümler = email.split("@");
+  if (bölümler.length != 2) return "";
   /** @const {string} */
   const emailKökü = bölümler[0].split("+")[0];
 
@@ -31,7 +32,10 @@ const emailAnahtarı = (email, hashSalt) => {
  * @return {!Response}
  */
 const tamam = () => new Response("👍", {
-  headers: { "content-type": "text/html;charset=utf-8" }
+  headers: {
+    "content-type": "text/html;charset=utf-8",
+    "access-control-allow-origin": "*"
+  }
 });
 
 /**
@@ -80,9 +84,12 @@ const Bulten = {
       return req.json().then((kayıt) => {
         /** @const {string} */
         const anahtar = emailAnahtarı(/** @type {Kayıt} */(kayıt).email, env.HASH_SALT);
-        if (yetkili || !/** @type {Kayıt} */(kayıt).ad)
+        if (anahtar && (yetkili || !/** @type {Kayıt} */(kayıt).ad))
           ctx.waitUntil(env.KV.put(anahtar, "", { metadata: kayıt }))
-        return tamam();
+        return anahtar ? tamam() : new Response("", {
+          headers: { "access-control-allow-origin": "*" },
+          status: 400
+        });
       })
 
     if (!yetkili) return tamam();
