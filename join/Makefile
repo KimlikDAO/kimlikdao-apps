@@ -66,7 +66,6 @@ build/join-%.html: join/sayfa.html \
     birim/tckt.birim
 	mkdir -p $(dir $@)
 	node lib/birimler/işleyici $< $*
-	yarn html-minifier -c lib/birimler/htmlMinifierConfig.json $@ -o $@
 
 .PHONY: join.sayfa
 join.sayfa: $(call compressions,build/join-en.html build/join-tr.html)

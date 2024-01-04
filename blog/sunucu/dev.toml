@@ -3,5 +3,7 @@ port = 8787
 dizin = "dizin"
 sayfalar = [
   ["eliptik-egriler", "elliptic-curves"],
-  ["eliptik-imza", "ecdsa"]
+  ["eliptik-imza", "ecdsa"],
+  ["2023.12", "2023-12"],
+  ["2024.01","2024-01"]
 ]

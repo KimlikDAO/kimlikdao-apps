@@ -17,7 +17,6 @@ h5 {
 #bl {
   max-width: 720px;
   margin: 1em auto;
-  font-size: 17px;
   line-height: 1.4;
 }
 
@@ -29,7 +28,6 @@ h5 {
 #blh1 {
   font-size: 36px;
 }
-
 
 #blk {
   position: absolute;

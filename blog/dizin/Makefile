@@ -7,12 +7,12 @@ build/blog/dizin/sayfa-%.js: blog/dizin/sayfa.js \
     birim/cüzdan/*.js \
     birim/dil/birim.js \
     lib/api/jsonrpc.d.js lib/api/jsonrpc.js \
-		lib/crosschain/unlockable.d.js \
-		lib/crosschain/provider.js lib/crosschain/signer.js \
-		lib/did/*.d.js \
-		lib/ethereum/*.d.js lib/ethereum/TCKTLite.js \
-		lib/node/*.d.js lib/node/ipfs.js \
-		lib/util/dom.js lib/util/çevir.js
+    lib/crosschain/unlockable.d.js \
+    lib/crosschain/provider.js lib/crosschain/signer.js \
+    lib/did/*.d.js \
+    lib/ethereum/*.d.js lib/ethereum/TCKTLite.js \
+    lib/node/*.d.js lib/node/ipfs.js \
+    lib/util/dom.js lib/util/çevir.js
 	mkdir -p $(dir $@)
 	yarn google-closure-compiler -W VERBOSE -O ADVANCED --charset UTF-8 \
                              --define "TR\$$\$$module\$$lib\$$util\$$dom=$(Lang-$*)" \
@@ -61,6 +61,5 @@ build/blog/dizin-%.html: blog/dizin/sayfa.html \
     birim/favicon.birim \
     birim/lato-%.birim
 	node lib/birimler/işleyici $< $*
-	yarn html-minifier -c lib/birimler/htmlMinifierConfig.json $@ -o $@
 
 blog/dizin.sayfa: $(call compressions,build/blog/dizin-en.html build/blog/dizin-tr.html)
