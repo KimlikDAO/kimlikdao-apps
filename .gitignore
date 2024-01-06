@@ -3,7 +3,7 @@
 .vscode
 *.lock*
 *.vars
-blog/cache
-blog/out
+blog/cache/
+blog/out/
 build
 node_modules

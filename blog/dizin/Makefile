@@ -1,5 +1,5 @@
-dizin-en := "?en"
-dizin-tr := "?tr"
+blog/dizin-en := "?en"
+blog/dizin-tr := "?tr"
 
 build/blog/dizin/sayfa-%.js: blog/dizin/sayfa.js \
     birim/ağlar/*.js \
@@ -16,8 +16,8 @@ build/blog/dizin/sayfa-%.js: blog/dizin/sayfa.js \
 	mkdir -p $(dir $@)
 	yarn google-closure-compiler -W VERBOSE -O ADVANCED --charset UTF-8 \
                              --define "TR\$$\$$module\$$lib\$$util\$$dom=$(Lang-$*)" \
-                             --define "KonumTR\$$\$$module\$$birim\$$dil\$$birim=$(dizin-tr)" \
-                             --define "KonumEN\$$\$$module\$$birim\$$dil\$$birim=$(dizin-en)" \
+                             --define "KonumTR\$$\$$module\$$birim\$$dil\$$birim=$(blog/dizin-tr)" \
+                             --define "KonumEN\$$\$$module\$$birim\$$dil\$$birim=$(blog/dizin-en)" \
                              --emit_use_strict \
                              --module_resolution NODE \
                              --assume_function_wrapper \

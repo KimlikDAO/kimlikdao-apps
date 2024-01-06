@@ -1,8 +1,8 @@
 account_id = "8f0c2f2271ff857947d9a5b2c38595a0"
 
-main = "../build/bulten/bulten.js"
-name = "kimlikdao-bulten"
-route = { pattern = "bulten.kimlikdao.org", custom_domain = true }
+main = "../../build/discord/prod.js"
+name = "kimlikdao-discord"
+route = { pattern = "discord.kimlikdao.org", custom_domain = true }
 
 workers_dev = false
 no_bundle = true
@@ -15,4 +15,5 @@ rules = [{ type = "Text", globs = [], fallthrough = false }]
 
 [[kv_namespaces]]
 binding = "KV"
-id = "f068dc76a2834375849d9baec40da2ca"
+id = "84ae9125ab654c4ca5511acbe63e269f"
+preview_id = "84ae9125ab654c4ca5511acbe63e269f"

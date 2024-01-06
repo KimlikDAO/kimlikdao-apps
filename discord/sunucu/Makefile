@@ -1,6 +1,6 @@
-PAGES := blog/dizin
+PAGES := discord/tckt-onayla
 
-build/blog/sunucu/prod.js: blog/sunucu/prod.js \
+build/discord/sunucu/prod.js: discord/sunucu/prod.js discord/sunucu/prod.d.js \
     lib/cloudflare/moduleWorker.d.js lib/cloudflare/types.d.js \
     lib/cloudflare/pageWorker.d.js lib/cloudflare/pageWorker.js
 	mkdir -p $(dir $@)
@@ -18,19 +18,18 @@ build/blog/sunucu/prod.js: blog/sunucu/prod.js \
                              --js $^ \
                              --js_output_file $@
 	yarn uglifyjs $@ -m -c toplevel,unsafe,drop_console -o $@
-	sed -i.bak 's/globalThis.BlogWorker=/export default/g' $@
+	sed -i.bak 's/globalThis.DiscordWorker=/export default/g' $@
 	wc $@
 
-blog.dev:
-	node lib/birimler/devSunucu --çalıştır blog/sunucu/dev.toml
+discord.dev:
+	node lib/birimler/devSunucu --çalıştır discord/sunucu/dev.toml
 
-blog.kanarya: blog/dizin.sayfa
-	node lib/birimler/kanaryaSunucu --çalıştır blog/sunucu/dev.toml
+discord.kanarya: discord/tckt-onayla.sayfa
+	node lib/birimler/kanaryaSunucu --çalıştır discord/sunucu/dev.toml
 
-blog.cf-deployment: build/blog/sunucu/prod.js blog/dizin.sayfa
-	node lib/cloudflare/uploader blog/sunucu/prod.toml blog/sunucu/Makefile
+discord.cf-deployment: build/discord/sunucu/prod.js discord/sunucu/prod.toml
 	wrangler deploy \
-	      --config blog/sunucu/prod.toml \
-	      --compatibility-date $(shell date -v -1d +%Y-%m-%d)
+        --config discord/sunucu/prod.toml \
+        --compatibility-date $(shell date -v -1d +%Y-%m-%d)
 
-.PHONY: blog.dev blog.kanarya blog.cf-deployment
+.PHONY: discord.dev discord.kanarya discord.cf-deployment

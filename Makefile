@@ -2,7 +2,9 @@ MAKEFLAGS := -j 8
 
 include lib/birimler/Makefile
 include birim/Makefile
+include bot/Makefile
 include bulten/Makefile
+include discord/Makefile
 include join/Makefile
 include blog/Makefile
 
