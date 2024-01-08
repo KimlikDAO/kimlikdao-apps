@@ -1,6 +1,6 @@
 account_id = "8f0c2f2271ff857947d9a5b2c38595a0"
 
-main = "../../build/discord/prod.js"
+main = "../build/discord/prod.js"
 name = "kimlikdao-discord"
 route = { pattern = "discord.kimlikdao.org", custom_domain = true }
 

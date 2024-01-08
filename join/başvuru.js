@@ -35,6 +35,7 @@ const TCKTValidator = new Validator({
   "0x89": "https://polygon-rpc.com",
   "0xa4b1": "https://arb1.arbitrum.io/rpc",
   "0x38": "https://bsc.publicnode.com",
+  "0xfa": "https://rpc.ankr.com/fantom",
 }, null, sorguyuOnayla);
 
 /**
