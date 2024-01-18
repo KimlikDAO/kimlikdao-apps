@@ -51,10 +51,10 @@ build/join/sayfa-%.css: birim/lato/l400.css \
     birim/tckt/birim.css
 	mkdir -p $(dir $@)
 	cat $(filter %.css,$^) | yarn csso --output $@
-	lib/birimler/keymapper.py $@ $(filter %.keymap,$^)
+	node lib/birimler/değiştirici $@ $(filter %.keymap,$^)
 
 build/join/sayfa-%.keymap: $(call compressions, build/join/sayfa-%.js build/join/sayfa-%.css)
-	mkdir -p $(dir $@) && > $@
+	mkdir -p $(dir $@)
 	node lib/birimler/hasher $@ build/join/sayfa-$*.js build/join/sayfa-$*.css
 
 build/join-%.html: join/sayfa.html \

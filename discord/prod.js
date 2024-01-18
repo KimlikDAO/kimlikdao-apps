@@ -70,11 +70,9 @@ const addRole = (req, env) => req.json()
                 "authorization": "Bot " + env.KIMLIKDAO_BOT_TOKEN,
                 "content-type": "application/json"
               }
-            }).then((res) => {
-              console.log("RES", res.status, res.statusText);
-              return res.ok ? err(200) : err(401)
-            });
-          })
+            }).then((res) => res.ok ? err(200) : err(401), () => err(400))
+          },
+            () => err(404))
       default:
         return err(405);
     }

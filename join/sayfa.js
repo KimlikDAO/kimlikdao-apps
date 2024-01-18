@@ -2,7 +2,7 @@ import Cüzdan from "/birim/cüzdan/birim";
 import "/birim/dil/birim";
 import { kur as kaydolKur } from "/birim/kaydol/birim";
 import Tckt from "/birim/tckt/birim";
-import { TCKT_ADDR } from "/lib/ethereum/TCKTLite";
+import TCKT from "/lib/ethereum/TCKTLite";
 import dom from "/lib/util/dom";
 import { getValidationRequest } from "/sdk/client";
 
@@ -198,7 +198,7 @@ const başvur = (dosyaSözü) => {
     return dosyaSözü.then((dosya) => getValidationRequest(
       Cüzdan.bağlantı(),
       Cüzdan.ağ(),
-      TCKT_ADDR,
+      TCKT.getAddress(Cüzdan.ağ()),
       /** @type {string} */(Cüzdan.adres()),
       dosya,
       ambassador ? ["humanID"] : ["personInfo", "contactInfo", "addressInfo", "kütükBilgileri"],

@@ -21,7 +21,7 @@ build/discord/prod.js: discord/prod.js discord/prod.d.js \
                              --entry_point $< \
                              --js $^ \
                              --js_output_file $@
-	yarn uglifyjs $@ -m -c toplevel,unsafe -o $@
+	yarn uglifyjs $@ -m -c toplevel,unsafe,drop_console -o $@
 	sed -i.bak 's/globalThis.DiscordWorker=/export default/g' $@
 	wc $@
 
