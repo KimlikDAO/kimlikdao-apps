@@ -16,18 +16,18 @@ build/join/sayfa-%.js: join/sayfa.js \
     sdk/api/*.js \
     sdk/client/index.js
 	mkdir -p $(dir $@)
-	yarn google-closure-compiler -W VERBOSE -O ADVANCED --charset UTF-8 \
-                             --define "TR\$$\$$module\$$lib\$$util\$$dom=$(Lang-$*)" \
-                             --define "KonumTR\$$\$$module\$$birim\$$dil\$$birim=$(join-tr)" \
-                             --define "KonumEN\$$\$$module\$$birim\$$dil\$$birim=$(join-en)" \
-                             --emit_use_strict \
-                             --module_resolution NODE \
-                             --assume_function_wrapper \
-                             --dependency_mode PRUNE \
-                             --entry_point $< \
-                             --js $^ \
-                             --js_output_file $@
-	yarn uglifyjs $@ -m -c toplevel,unsafe -o $@
+	bun google-closure-compiler -W VERBOSE -O ADVANCED --charset UTF-8 \
+                            --define "TR\$$\$$module\$$lib\$$util\$$dom=$(Lang-$*)" \
+                            --define "KonumTR\$$\$$module\$$birim\$$dil\$$birim=$(join-tr)" \
+                            --define "KonumEN\$$\$$module\$$birim\$$dil\$$birim=$(join-en)" \
+                            --emit_use_strict \
+                            --module_resolution NODE \
+                            --assume_function_wrapper \
+                            --dependency_mode PRUNE \
+                            --entry_point $< \
+                            --js $^ \
+                            --js_output_file $@
+	bun uglifyjs $@ -m -c toplevel,unsafe -o $@
 	wc $@
 
 build/join/l400.keymap: build/birim/lato/birim.keymap
@@ -50,12 +50,12 @@ build/join/sayfa-%.css: birim/lato/l400.css \
     birim/kaydol/birim.css \
     birim/tckt/birim.css
 	mkdir -p $(dir $@)
-	cat $(filter %.css,$^) | yarn csso --output $@
-	node lib/birimler/değiştirici $@ $(filter %.keymap,$^)
+	cat $(filter %.css,$^) | bun csso --output $@
+	bun lib/birimler/değiştirici.js $@ $(filter %.keymap,$^)
 
 build/join/sayfa-%.keymap: $(call compressions, build/join/sayfa-%.js build/join/sayfa-%.css)
 	mkdir -p $(dir $@)
-	node lib/birimler/hasher $@ build/join/sayfa-$*.js build/join/sayfa-$*.css
+	bun lib/birimler/hasher.js $@ build/join/sayfa-$*.js build/join/sayfa-$*.css
 
 build/join-%.html: join/sayfa.html \
     build/join/sayfa-%.keymap \
@@ -65,7 +65,7 @@ build/join-%.html: join/sayfa.html \
     birim/lato-%.birim \
     birim/tckt.birim
 	mkdir -p $(dir $@)
-	node lib/birimler/işleyici $< $*
+	bun lib/birimler/işleyici.js $< $*
 
 .PHONY: join.sayfa
 join.sayfa: $(call compressions,build/join-en.html build/join-tr.html)
@@ -84,29 +84,29 @@ build/join/prod.js: join/prod.js join/prod.d.js \
     lib/util/çevir.js \
     sdk/api/*.js \
     sdk/server-js/TCKT.js sdk/server-js/TCKTSigners.js sdk/server-js/validator.js
-	yarn google-closure-compiler -W VERBOSE -O ADVANCED --charset UTF-8 \
-                             --jscomp_error=checkTypes \
-                             --jscomp_error=strictCheckTypes \
-                             --emit_use_strict \
-                             --module_resolution NODE \
-                             --assume_function_wrapper \
-                             --dependency_mode PRUNE \
-                             --entry_point $< \
-                             --js $^ \
-                             --js_output_file $@
-	yarn uglifyjs $@ -m -c unsafe -o $@
+	bun google-closure-compiler -W VERBOSE -O ADVANCED --charset UTF-8 \
+                            --jscomp_error=checkTypes \
+                            --jscomp_error=strictCheckTypes \
+                            --emit_use_strict \
+                            --module_resolution NODE \
+                            --assume_function_wrapper \
+                            --dependency_mode PRUNE \
+                            --entry_point $< \
+                            --js $^ \
+                            --js_output_file $@
+	bun uglifyjs $@ -m -c unsafe -o $@
 	sed -i.bak 's/globalThis.JoinWorker=/export default/g' $@
 	wc $@
 
 join.dev:
-	node lib/birimler/devSunucu --çalıştır join/dev.toml
+	bun lib/birimler/devSunucu.js --çalıştır join/dev.toml
 
 join.kanarya: join.sayfa
-	node lib/birimler/kanaryaSunucu --çalıştır join/dev.toml
+	bun lib/birimler/kanaryaSunucu.js --çalıştır join/dev.toml
 
 join.cf-deployment: join.sayfa build/join/prod.js
-	node lib/cloudflare/uploader join/prod.toml join/uploader.config
-	wrangler deploy \
+	bun lib/cloudflare/uploader.js join/prod.toml join/uploader.config
+	bun wrangler deploy \
         --config join/prod.toml \
         --compatibility-date $(shell date -v -1d +%Y-%m-%d)
 
