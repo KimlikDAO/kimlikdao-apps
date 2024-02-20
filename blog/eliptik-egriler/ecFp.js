@@ -48,9 +48,7 @@ const fp = (d) => {
   return html;
 }
 
-exports.fp = fp;
-
-exports.üret = (d) => {
+const üret = (d) => {
   d.en = +d.width;
   d.p = +d.p;
   d.boşluk ||= 10;
@@ -63,3 +61,8 @@ exports.üret = (d) => {
   const iç = fp(d) + `<text stroke="#5698E2" x="${d.en / 5 - 45}" y="${d.boy - 60}">P = (2, -8)</text>`
   return `<svg class="${d.class}" height="${d.boy}" width="${d.en}">${iç}</svg>`;
 }
+
+export {
+  fp,
+  üret
+};

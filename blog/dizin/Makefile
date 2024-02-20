@@ -43,12 +43,12 @@ build/blog/dizin/sayfa-%.css: blog/dizin/sayfa.css \
     birim/dil/birim.css
 	mkdir -p $(dir $@)
 	cat $(filter %.css,$^) | yarn csso --output $@
-	lib/birimler/keymapper.py $@ $(filter %.keymap,$^)
+	node lib/birimler/değiştirici $@ $(filter %.keymap,$^)
 
 build/blog/dizin/sayfa-%.keymap: \
     $(call compressions, build/blog/dizin/sayfa-%.js) \
     $(call compressions, build/blog/dizin/sayfa-%.css)
-	mkdir -p $(dir $@) && > $@
+	mkdir -p $(dir $@)
 	node lib/birimler/hasher $@ build/blog/dizin/sayfa-$*.js build/blog/dizin/sayfa-$*.css
 
 build/blog/dizin-%.html: blog/dizin/sayfa.html \

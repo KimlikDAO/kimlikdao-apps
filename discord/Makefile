@@ -26,7 +26,7 @@ build/discord/prod.js: discord/prod.js discord/prod.d.js \
 	wc $@
 
 discord.cf-deployment: build/discord/prod.js discord/prod.toml
-	wrangler deploy \
+	bun wrangler deploy \
         --config discord/prod.toml \
         --compatibility-date $(shell date -v -1d +%Y-%m-%d)
 

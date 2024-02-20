@@ -1,7 +1,7 @@
-const { fp } = require("./ecFp.cjs");
-const { Point } = require("../../lib/birimler/svg.cjs");
+import { Point } from "../../lib/birimler/svg";
+import { fp } from "./ecFp";
 
-exports.üret = (d) => {
+const üret = (d) => {
   d.en = +d.width;
   d.p = +d.p;
   d.boşluk ||= 10;
@@ -68,4 +68,8 @@ exports.üret = (d) => {
     açıkla(R, "R") +
     açıkla(g(new Point(16, 1)), "-R") +
     `${fp(d)}</svg>`;
+};
+
+export {
+  üret
 };

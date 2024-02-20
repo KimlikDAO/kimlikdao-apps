@@ -4,6 +4,7 @@ include lib/birimler/Makefile
 include birim/Makefile
 include bot/Makefile
 include bulten/Makefile
+include demo-mapping/Makefile
 include discord/Makefile
 include join/Makefile
 include blog/Makefile
