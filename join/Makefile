@@ -11,6 +11,7 @@ build/join/sayfa-%.js: join/sayfa.js \
     lib/crypto/*.js \
     lib/did/*.js \
     lib/ethereum/*.js \
+    lib/mina/*.d.js \
     lib/node/*.js \
     lib/util/dom.js lib/util/çevir.js \
     sdk/api/*.js \
