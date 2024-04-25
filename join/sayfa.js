@@ -1,23 +1,23 @@
 import Cüzdan from "/birim/cüzdan/birim";
 import "/birim/dil/birim";
 import { kur as kaydolKur } from "/birim/kaydol/birim";
-import Tckt from "/birim/tckt/birim";
-import TCKT from "/lib/ethereum/TCKTLite";
+import Kpass from "/birim/kpass/birim";
+import KPass from "/lib/ethereum/KPassLite";
 import dom from "/lib/util/dom";
 import { getValidationRequest } from "/sdk/client";
 
 /** @const {!Element} */
-const BaşvurDüğmesi = /** @type {!Element} */(dom.adla("joba"));
+const BaşvurDüğmesi = dom.adla("joba");
 /** @const {!Element} */
-const GeriDüğmesi = /** @type {!Element} */(dom.adla("joge"));
+const GeriDüğmesi = dom.adla("joge");
 /** @const {!Element} */
-const BaşvurFormu = /** @type {!Element} */(dom.adla("jof"));
+const BaşvurFormu = dom.adla("jof");
 /** @const {!Element} */
-const GitHubKutusu = /** @type {!Element} */(dom.adla("joghi"));
+const GitHubKutusu = dom.adla("joghi");
 /** @const {!Element} */
-const EmailKutusu = /** @type {!Element} */(dom.adla("joemi"));
+const EmailKutusu = dom.adla("joemi");
 /** @const {!Element} */
-const TwitterKutusu = /** @type {!Element} */(dom.adla("jotwi"));
+const TwitterKutusu = dom.adla("jotwi");
 
 /** @type {Element} */
 let SeçiliAçıklama = dom.adla("jod");
@@ -170,7 +170,7 @@ const başvuruSonrası = (res, dosyaSözü) => {
   dom.düğmeDurdur(BaşvurDüğmesi);
   setTimeout(() => {
     BaşvurDüğmesi.classList.remove("dis");
-    tcktDeğişti("0x", dosyaSözü);
+    kpassDeğişti("0x", dosyaSözü);
   }, 3000);
 }
 
@@ -198,7 +198,7 @@ const başvur = (dosyaSözü) => {
     return dosyaSözü.then((dosya) => getValidationRequest(
       Cüzdan.bağlantı(),
       Cüzdan.ağ(),
-      TCKT.getAddress(Cüzdan.ağ()),
+      KPass.getAddress(Cüzdan.ağ()),
       /** @type {string} */(Cüzdan.adres()),
       dosya,
       ambassador ? ["humanID"] : ["personInfo", "contactInfo", "addressInfo", "kütükBilgileri"],
@@ -217,7 +217,7 @@ const başvur = (dosyaSözü) => {
         headers: { "content-type": "application/json;charset=utf-8" },
         body: JSON.stringify(istek)
       })
-    }).catch(() => tcktDeğişti("0x", dosyaSözü))
+    }).catch(() => kpassDeğişti("0x", dosyaSözü))
       .then((res) => başvuruSonrası(res, dosyaSözü))
     )
   })
@@ -230,7 +230,7 @@ let BağlaMetni;
  * @param {?string} cidHex
  * @param {Promise<!eth.ERC721Unlockable>} dosyaSözü
  */
-const tcktDeğişti = (cidHex, dosyaSözü) => {
+const kpassDeğişti = (cidHex, dosyaSözü) => {
   BaşvurDüğmesi.onclick = cidHex
     ? dosyaSözü
       ? () => başvur(/** @type {!Promise<!eth.ERC721Unlockable>} */(dosyaSözü))
@@ -243,8 +243,8 @@ const tcktDeğişti = (cidHex, dosyaSözü) => {
   if (cidHex) {
     if (!BağlaMetni) BağlaMetni = BaşvurDüğmesi.innerText;
     BaşvurDüğmesi.innerText = dosyaSözü
-      ? dom.TR ? "TCKT ile başvur" : "Apply with TCKT"
-      : dom.TR ? "TCKT al" : "Mint your TCKT";
+      ? dom.TR ? "KPass ile başvur" : "Apply with KPass"
+      : dom.TR ? "KPass al" : "Mint your KPass";
   } else if (BağlaMetni)
     BaşvurDüğmesi.innerText = BağlaMetni;
 }
@@ -262,10 +262,10 @@ const kur = () => {
   window.onhashchange = () => ilanSeç(window.location.hash.slice(1));
   GeriDüğmesi.onclick = () => ilanSeç("");
 
-  tcktDeğişti(null, null);
-  Cüzdan.tcktDeğişince(tcktDeğişti);
+  kpassDeğişti(null, null);
+  Cüzdan.kpassDeğişince(kpassDeğişti);
 
-  Tckt.Kök.onclick = Tckt.çevir;
+  Kpass.Kök.onclick = Kpass.çevir;
 
   for (const elm of BaşvurFormu.elements) {
     /** @const {?string} */

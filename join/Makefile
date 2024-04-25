@@ -6,7 +6,8 @@ build/join/sayfa-%.js: join/sayfa.js \
     birim/cüzdan/*.js \
     birim/dil/birim.js \
     birim/kaydol/birim.js \
-    birim/tckt/birim.js \
+    birim/kpass/birim.js \
+    lib/api/*.js \
     lib/crosschain/*.js \
     lib/crypto/*.js \
     lib/did/*.js \
@@ -49,7 +50,7 @@ build/join/sayfa-%.css: birim/lato/l400.css \
     birim/cüzdan/birim.css \
     birim/dil/birim.css \
     birim/kaydol/birim.css \
-    birim/tckt/birim.css
+    birim/kpass/birim.css
 	mkdir -p $(dir $@)
 	cat $(filter %.css,$^) | bun csso --output $@
 	bun lib/birimler/değiştirici.js $@ $(filter %.keymap,$^)
@@ -64,7 +65,7 @@ build/join-%.html: join/sayfa.html \
     birim/favicon.birim \
     birim/kaydol.birim \
     birim/lato-%.birim \
-    birim/tckt.birim
+    birim/kpass.birim
 	mkdir -p $(dir $@)
 	bun lib/birimler/işleyici.js $< $*
 
@@ -80,11 +81,11 @@ build/join/prod.js: join/prod.js join/prod.d.js \
     lib/crosschain/*.js \
     lib/crypto/modular.js lib/crypto/secp256k1.js lib/crypto/sha3.js \
     lib/did/*.d.js lib/did/section.js \
-    lib/ethereum/*.d.js lib/ethereum/evm.js \
+    lib/ethereum/*.js \
     lib/node/nvi.d.js \
     lib/util/çevir.js \
     sdk/api/*.js \
-    sdk/server-js/TCKT.js sdk/server-js/TCKTSigners.js sdk/server-js/validator.js
+    sdk/server-js/KPass.js sdk/server-js/KPassSigners.js sdk/server-js/validator.js
 	bun google-closure-compiler -W VERBOSE -O ADVANCED --charset UTF-8 \
                             --jscomp_error=checkTypes \
                             --jscomp_error=strictCheckTypes \
