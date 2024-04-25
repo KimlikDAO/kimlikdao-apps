@@ -1,14 +1,14 @@
 build/discord/prod.js: discord/prod.js discord/prod.d.js \
-    dapp/tcktm/discord.d.js dapp/tcktm/discord.js \
+    dapp/kpassim/discord.d.js dapp/kpassim/discord.js \
     lib/api/*.d.js lib/api/jsonrpc.js \
     lib/cloudflare/moduleWorker.d.js lib/cloudflare/types.d.js \
     lib/cloudflare/pageWorker.d.js lib/cloudflare/pageWorker.js \
     lib/crosschain/*.js \
     lib/crypto/sha3.js \
     lib/crypto/modular.js lib/crypto/secp256k1.js \
-    lib/ethereum/*.d.js lib/ethereum/evm.js \
+    lib/ethereum/*.js \
     lib/util/çevir.js \
-    sdk/server-js/TCKT.js
+    sdk/server-js/KPass.js
 	mkdir -p $(dir $@)
 	yarn google-closure-compiler -W VERBOSE -O ADVANCED --charset UTF-8 \
                              --jscomp_error=checkTypes \

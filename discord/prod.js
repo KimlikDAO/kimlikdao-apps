@@ -1,6 +1,7 @@
-import { getHmac, roleRequestChallenge } from "/dapp/tcktm/discord";
+import { getHmac, roleRequestChallenge } from "/dapp/kpassim/discord";
+import { ChainId } from "/lib/crosschain/chains";
 import evm from "/lib/ethereum/evm";
-import { TCKT as TCKTStub } from "/sdk/server-js/TCKT";
+import { KPass as ServerKPass } from "/sdk/server-js/KPass";
 
 /** @define {string} */
 const DISCORD_CLIENT_ID = "1068629633970487428";
@@ -19,16 +20,17 @@ const DISCORD_API_URL = "https://discord.com/api/v10/";
 
 /** @const {!Object<string, string>} */
 const ROLE_IDS = {
-  "TCKT HOLDER": "1069046438367088680"
+  "KPASS HOLDER": "1069046438367088680"
 };
 
-const TCKT = new TCKTStub({
-  "0xa86a": "https://api.avax-test.network/ext/bc/C/rpc",
-  "0x1": "https://cloudflare-eth.com",
-  "0x89": "https://polygon-rpc.com",
-  "0xa4b1": "https://arb1.arbitrum.io/rpc",
-  "0x38": "https://bsc.publicnode.com",
-  "0xfa": "https://rpc.ankr.com/fantom",
+/** @const {!ServerKPass} */
+const KPass = new ServerKPass({
+  [ChainId.xa86a]: "https://api.avax-test.network/ext/bc/C/rpc",
+  [ChainId.x1]: "https://cloudflare-eth.com",
+  [ChainId.x89]: "https://polygon-rpc.com",
+  [ChainId.xa4b1]: "https://arb1.arbitrum.io/rpc",
+  [ChainId.x38]: "https://bsc.publicnode.com",
+  [ChainId.xfa]: "https://rpc.ankr.com/fantom",
 });
 
 /**
@@ -57,8 +59,8 @@ const addRole = (req, env) => req.json()
     /** @const {string} */
     const address = evm.signerAddress(digest, roleReq.signature);
     switch (roleReq.role) {
-      case "TCKT HOLDER":
-        return TCKT.handleOf(roleReq.chainID, address)
+      case "KPASS HOLDER":
+        return KPass.handleOf(/** @type {ChainId} */(roleReq.chainID), address)
           .then((/** @type {string} */ cidHex) => {
             if (evm.isZero(cidHex)) return err(412);
             /** @const {string} */
