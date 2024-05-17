@@ -1,26 +1,30 @@
 {
-  "name": "oduller",
-  "description": "KimlikDAO auxiliary apps",
+  "name": "kimlikdao-apps",
+  "description": "KimlikDAO apps",
   "author": "KimlikDAO <dao@kimlikdao.org>",
   "private": true,
-  "version": "0.0.0",
   "type": "module",
   "scripts": {
+    "postinstall": "mkdir -p ./node_modules/@kimlikdao && ln -sfn ../../lib ./node_modules/@kimlikdao/lib && ln -sfn ../../sdk ./node_modules/@kimlikdao/sdk",
     "build": "make build",
     "start": "make dev",
     "test": "vitest"
   },
   "devDependencies": {
     "csso-cli": "^4.0.2",
-    "express": "^4.18.1",
-    "google-closure-compiler": "^20230802.0.0",
+    "express": "^4.19.2",
+    "google-closure-compiler": "^20240317.0.0",
     "html-minifier": "^4.0.0",
     "htmlparser2": "^9.1.0",
     "svgexport": "^0.4.2",
-    "svgo": "^3.2.0",
+    "svgo": "^3.3.2",
     "toml": "^3.0.0",
     "uglify-js": "^3.16.2",
-    "vite": "^5.0.11",
-    "wrangler": "^3.23.0"
+    "vite": "^5.2.11",
+    "wrangler": "^3.56.0"
+  },
+  "dependencies": {
+    "o1js": "^1.2.0",
+    "typescript": "^5.4.5"
   }
 }

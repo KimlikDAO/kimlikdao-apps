@@ -7,3 +7,4 @@ blog/cache/
 blog/out/
 build
 node_modules
+out
