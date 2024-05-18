@@ -35,3 +35,32 @@ jobs:
       - name: Build prod worker
         run: |
           make build/blog/sunucu/prod.js
+
+  build-join:
+    name: Build KimlikDAO join
+    strategy:
+      fail-fast: true
+
+    runs-on: macos-latest
+    steps:
+      - name: Clone the repo
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Install bun
+        uses: oven-sh/setup-bun@v1
+
+      - name: Install build tools
+        run: |
+          bun i
+          brew install pngcrush brotli zopfli woff2 webp
+          pip install fonttools
+
+      - name: Build join page
+        run: |
+          make join.sayfa
+
+      - name: Build prod worker
+        run: |
+          make build/join/prod.js

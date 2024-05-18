@@ -14,7 +14,7 @@ build/join/sayfa-%.js: join/sayfa.js \
     lib/ethereum/*.js \
     lib/mina/*.d.js \
     lib/node/*.js \
-    lib/util/dom.js lib/util/çevir.js \
+    lib/util/dom.js lib/util/çevir.js lib/util/base58.js \
     sdk/api/*.js \
     sdk/client/index.js
 	mkdir -p $(dir $@)
