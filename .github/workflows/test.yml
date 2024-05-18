@@ -64,3 +64,26 @@ jobs:
       - name: Build prod worker
         run: |
           make build/join/prod.js
+
+  build-discord:
+    name: Build KimlikDAO discord worker
+    strategy:
+      fail-fast: true
+
+    runs-on: ubuntu-latest
+    steps:
+      - name: Clone the repo
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Install bun
+        uses: oven-sh/setup-bun@v1
+
+      - name: Install build tools
+        run: |
+          bun i
+
+      - name: Build discord worker
+        run: |
+          make build/discord/prod.js
