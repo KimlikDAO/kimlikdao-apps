@@ -1,7 +1,7 @@
 .DS_Store
 .gizli
 .vscode
-*.lock*
+*lock*
 *.vars
 blog/cache/
 blog/out/

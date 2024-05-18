@@ -7,6 +7,8 @@ import { method } from "o1js";
 
 const MINA = 1e9;
 
+const LEARN2EARN = "B62qrzBYPHRZ6FsQpZCw5FbgvRbFh2jFHY2DT35pWjJc9K5Mbq2zppH";
+
 class Learn2Earn extends PerHumanIDv1Contract {
   @method async claimReward(humanIDv1: HumanIDv1, witness: HumanIDv1Witness) {
     const sender = this.sender.getUnconstrained();
@@ -15,4 +17,4 @@ class Learn2Earn extends PerHumanIDv1Contract {
   }
 }
 
-export { Learn2Earn };
+export { LEARN2EARN, Learn2Earn };

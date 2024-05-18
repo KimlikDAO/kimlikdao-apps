@@ -11,6 +11,9 @@
     "test": "vitest"
   },
   "devDependencies": {
+    "@swc/cli": "^0.3.12",
+    "@swc/core": "^1.5.7",
+    "@swc/helpers": "^0.5.11",
     "csso-cli": "^4.0.2",
     "express": "^4.19.2",
     "google-closure-compiler": "^20240317.0.0",
@@ -19,12 +22,12 @@
     "svgexport": "^0.4.2",
     "svgo": "^3.3.2",
     "toml": "^3.0.0",
+    "typescript": "^5.4.5",
     "uglify-js": "^3.16.2",
     "vite": "^5.2.11",
-    "wrangler": "^3.56.0"
+    "wrangler": "^3.57.0"
   },
   "dependencies": {
-    "o1js": "^1.2.0",
-    "typescript": "^5.4.5"
+    "o1js": "^1.2.0"
   }
 }

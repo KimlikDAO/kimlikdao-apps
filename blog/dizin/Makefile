@@ -9,11 +9,11 @@ build/blog/dizin/sayfa-%.js: blog/dizin/sayfa.js \
     lib/api/jsonrpc.d.js lib/api/jsonrpc.js \
     lib/crosschain/*.js \
     lib/did/*.d.js \
-    lib/ethereum/*.d.js lib/ethereum/TCKTLite.js \
+    lib/ethereum/*.d.js lib/ethereum/KPassLite.js \
     lib/ethereum/provider.js \
     lib/mina/*.d.js \
     lib/node/*.d.js lib/node/ipfs.js \
-    lib/util/dom.js lib/util/çevir.js
+    lib/util/dom.js lib/util/çevir.js lib/util/base58.js
 	mkdir -p $(dir $@)
 	bun google-closure-compiler -W VERBOSE -O ADVANCED --charset UTF-8 \
                             --define "TR\$$\$$module\$$lib\$$util\$$dom=$(Lang-$*)" \
