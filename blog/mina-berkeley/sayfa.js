@@ -1,11 +1,22 @@
-import "/birim/cüzdan/birim";
+import Cüzdan from "/birim/cüzdan/birim";
 import "/birim/dil/birim";
 import dom from "/lib/util/dom";
+import { PublicKey } from "/lib/mina/mina";
 
 /** @const {!Element} */
 const ClaimButton = dom.adla("mbcl");
 
-const Learn2EarnWorker = new Worker("/blog/mina-berkeley/contracts/Learn2EarnWorker.ts", { type: "module" });
+const Learn2EarnWorker = new Worker(
+  "/blog/mina-berkeley/contracts/Learn2EarnWorker.ts",
+  { type: "module" }
+);
 Learn2EarnWorker.onmessage = console.log;
 
-ClaimButton.onclick = () => Learn2EarnWorker.postMessage(new Uint8Array(33 + 256));
+ClaimButton.onclick = () => {
+  const message = new Uint8Array(33 + 256);
+  PublicKey.fromBase58(Cüzdan.adres()).serializeInto(message);
+
+  Learn2EarnWorker.postMessage(message);
+  Learn2EarnWorker.onmessage = (/** @type {!MessageEvent} */ msg) =>
+    window.mina.sendTransaction({ transaction: msg.data });
+};
