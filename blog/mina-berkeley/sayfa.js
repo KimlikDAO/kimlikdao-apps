@@ -18,5 +18,6 @@ ClaimButton.onclick = () => {
 
   Learn2EarnWorker.postMessage(message);
   Learn2EarnWorker.onmessage = (/** @type {!MessageEvent} */ msg) =>
-    window.mina.sendTransaction({ transaction: msg.data });
+    window.mina.sendTransaction({ transaction: msg.data })
+      .then(console.log);
 };

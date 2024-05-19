@@ -1,25 +1,34 @@
-import { HumanIDv1, HumanIDv1Witness, readPublicKey } from "@kimlikdao/sdk/mina/HumanIDv1";
-import { Field, MerkleTree, Mina, Poseidon, PrivateKey, PublicKey, Signature } from "o1js";
-import { LEARN2EARN, Learn2Earn as Learn2EarnContract } from "./Learn2Earn";
+import {
+  HumanIDv1,
+  HumanIDv1Witness,
+  readPublicKey,
+} from "@kimlikdao/sdk/mina/HumanIDv1";
+import {
+  Field,
+  MerkleTree,
+  Mina,
+  Poseidon,
+  PrivateKey,
+  PublicKey,
+  Signature,
+} from "o1js";
+import { Learn2Earn, Learn2EarnContract } from "./Learn2Earn";
 
 console.log("Worker loaded and parsed");
 
-console.time("compiling Learn2Earn")
+console.time("compiling Learn2Earn");
 
 const Learn2EarnCompiled = Learn2EarnContract.compile().then(() => {
   console.timeEnd("compiling Learn2Earn");
   postMessage("compiled");
 });
 
-const Network = Mina.Network('https://api.minascan.io/node/devnet/v1/graphql');
+const Network = Mina.Network("https://api.minascan.io/node/devnet/v1/graphql");
 console.log("Devnet network instance configured.");
 Mina.setActiveInstance(Network);
 
-const Learn2Earn = new Learn2EarnContract(PublicKey.fromBase58(LEARN2EARN));
-
 const getWitness = (humanIDv1Id: bigint) =>
-  Promise.resolve(new HumanIDv1Witness(new MerkleTree(33).getWitness(humanIDv1Id & 0xFFFFFFFFn)));
-
+  Promise.resolve(new HumanIDv1Witness(new MerkleTree(33).getWitness(humanIDv1Id & 0xffffffffn)));
 
 const blindingCommit = (sender: PublicKey) => {
   const commitmentR = Field.random();
@@ -46,10 +55,12 @@ onmessage = async (event) => {
   const humanIDv1 = signHumanIDv1(100n, sender); // HumanIDv1.fromBytes(event.data.subarray(33));
 
   const witness = await getWitness(humanIDv1.id.toBigInt());
-  const tx = await Mina.transaction(sender, () => Learn2Earn.claimReward(humanIDv1, witness))
+  const tx = await Mina.transaction(sender, () =>
+    Learn2Earn.claimReward(humanIDv1, witness)
+  );
   console.log("proving tx");
   console.time("proving tx");
   const proven = await tx.prove();
   console.timeEnd("proving tx");
   postMessage(proven.toJSON());
-}
+};
