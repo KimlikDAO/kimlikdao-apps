@@ -12,9 +12,9 @@ import {
   PublicKey,
   Signature,
 } from "o1js";
-import { Learn2Earn, Learn2EarnContract } from "./Learn2Earn";
+import { Learn2Earn, Learn2EarnContract, LEARN2EARN } from "./Learn2Earn";
 
-console.log("Worker loaded and parsed");
+const NODE_HOSTNAME = "mina.kimlikdao.org";
 
 console.time("compiling Learn2Earn");
 
@@ -24,11 +24,13 @@ const Learn2EarnCompiled = Learn2EarnContract.compile().then(() => {
 });
 
 const Network = Mina.Network("https://api.minascan.io/node/devnet/v1/graphql");
-console.log("Devnet network instance configured.");
 Mina.setActiveInstance(Network);
+console.log("Devnet network instance configured.");
 
-const getWitness = (humanIDv1Id: bigint) =>
-  Promise.resolve(new HumanIDv1Witness(new MerkleTree(33).getWitness(humanIDv1Id & 0xffffffffn)));
+const getWitness = (humanIDv1Id: bigint): Promise<HumanIDv1Witness> =>
+  fetch(`https://${NODE_HOSTNAME}/witness/${LEARN2EARN}/${(humanIDv1Id & 0xffffffffn).toString(16)}`)
+    .then((res) => res.json())
+    .then((data) => new HumanIDv1Witness(data));
 
 const blindingCommit = (sender: PublicKey) => {
   const commitmentR = Field.random();
@@ -53,8 +55,8 @@ const signHumanIDv1 = (humanIDv1Id: bigint, sender: PublicKey): HumanIDv1 => {
 onmessage = async (event) => {
   const sender = readPublicKey(event.data);
   const humanIDv1 = signHumanIDv1(100n, sender); // HumanIDv1.fromBytes(event.data.subarray(33));
+  const [witness] = await Promise.all([getWitness(humanIDv1.id.toBigInt()), Learn2EarnCompiled]);
 
-  const witness = await getWitness(humanIDv1.id.toBigInt());
   const tx = await Mina.transaction(sender, () =>
     Learn2Earn.claimReward(humanIDv1, witness)
   );
