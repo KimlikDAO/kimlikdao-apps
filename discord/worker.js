@@ -1,16 +1,25 @@
-import { getHmac, roleRequestChallenge } from "/dapp/kpassim/discord";
-import { ChainId } from "/lib/crosschain/chains";
+import { roleRequestChallenge } from "/dapp/kpassim/discord";
+import oauth2 from "/lib/api/oauth2.d";
+import { ModuleWorker } from "/lib/birimler/cloudflare/moduleWorker.d";
+import { ChainId, ChainGroup, chainIdToGroup } from "/lib/crosschain/chains";
+import { keccak256 } from "/lib/crypto/sha3";
 import evm from "/lib/ethereum/evm";
 import { KPass as ServerKPass } from "/sdk/server-js/KPass";
+import { signerAddress } from "/lib/ethereum/signer";
+import { verifyMessage } from "/lib/mina/signer";
 
+/** @define {string} */
+const HOST_URL = "https://discord.kimlikdao.org";
 /** @define {string} */
 const DISCORD_CLIENT_ID = "1068629633970487428";
-
 /** @define {string} */
 const DISCORD_GUILD_ID = "951587582712639548";
-
-/** @const {string} */
-const HOST_URL = "https://discord.kimlikdao.org";
+/** @define {string} */
+const DISCORD_CLIENT_SECRET = "DISCORD_CLIENT_SECRET";
+/** @define {string} */
+const KIMLIKDAO_BOT_TOKEN = "KIMLIKDAO_BOT_TOKEN";
+/** @define {string} */
+const HMAC_SECRET = "HMAC_SECRET";
 
 /**
  * @const {string}
@@ -34,10 +43,18 @@ const KPass = new ServerKPass({
 });
 
 /**
+ * @param {!discord.SignedID} discordID
+ * @param {string} secret
+ * @return {string} hmac for the data fields
+ */
+const getHmac = (discordID, secret) => keccak256(
+  JSON.stringify(discordID, ["id", "username"]) + secret);
+
+/**
  * @param {number} status
  * @return {!Response}
  */
-const err = (status) => new Response(null, {
+const respondWith = (status) => new Response(null, {
   status,
   headers: { "access-control-allow-origin": "https://kimlikdao.org" }
 });
@@ -46,37 +63,46 @@ const err = (status) => new Response(null, {
  * Adds the requested role if the requirements are satisfied.
  *
  * @param {!Request} req
- * @param {!DiscordEnv} env
  * @return {!Promise<!Response>|!Response}
  */
-const addRole = (req, env) => req.json()
-  .then(/** @type {function(*)} */((/** @type {!discord.RoleRequest} */ roleReq) => {
-    if (getHmac(roleReq.discordID, env.HMAC_SECRET) != roleReq.discordID.hmac)
-      return err(401);
+const addRole = (req) => req.json()
+  .then(/** @type {function(*)} */((/** @type {discord.RoleRequest} */ roleReq) => {
+    if (getHmac(roleReq.discordID, HMAC_SECRET) != roleReq.discordID.hmac)
+      return respondWith(401);
+    /** @const {ChainId} */
+    const chainId = /** @type {ChainId} */(roleReq.chainID);
+    /** @const {ChainGroup} */
+    const chainGroup = chainIdToGroup(chainId);
     /** @const {string} */
-    const digest = evm.personalDigest(
-      roleRequestChallenge(roleReq.discordID, roleReq.role, roleReq.lang == "tr"));
+    const message = roleRequestChallenge(roleReq.discordID, roleReq.role, roleReq.lang == "tr");
     /** @const {string} */
-    const address = evm.signerAddress(digest, roleReq.signature);
+    const address = chainGroup == ChainGroup.EVM
+      ? signerAddress(evm.personalDigest(message),
+        /** @type {eth.CompactSignature} */(roleReq.signerSignature))
+      : /** @type {mina.SignerSignature} */(roleReq.signerSignature).signer;
+    if (chainGroup == ChainGroup.MINA &&
+      !verifyMessage(message, /** @type {mina.SignerSignature} */(roleReq.signerSignature)))
+      return respondWith(400);
+
     switch (roleReq.role) {
       case "KPASS HOLDER":
-        return KPass.handleOf(/** @type {ChainId} */(roleReq.chainID), address)
+        return KPass.handleOf(chainId, address)
           .then((/** @type {string} */ cidHex) => {
-            if (evm.isZero(cidHex)) return err(412);
+            if (evm.isZero(cidHex)) return respondWith(412);
             /** @const {string} */
             const roleID = ROLE_IDS[roleReq.role];
             return fetch(DISCORD_API_URL + `guilds/${DISCORD_GUILD_ID}/`
               + `members/${roleReq.discordID.id}/roles/${roleID}`, {
               method: "PUT",
               headers: {
-                "authorization": "Bot " + env.KIMLIKDAO_BOT_TOKEN,
+                "authorization": "Bot " + KIMLIKDAO_BOT_TOKEN,
                 "content-type": "application/json"
               }
-            }).then((res) => res.ok ? err(200) : err(401), () => err(400))
+            }).then((res) => res.ok ? respondWith(200) : respondWith(401), () => respondWith(400))
           },
-            () => err(404))
+            () => respondWith(404))
       default:
-        return err(405);
+        return respondWith(405);
     }
   }))
 
@@ -88,10 +114,9 @@ const kapat = () =>
 
 /**
  * @param {!Request} req
- * @param {!DiscordEnv} env
  * @return {!Promise<!Response>|!Response}
  */
-const getDiscordID = (req, env) => {
+const getDiscordID = (req) => {
   /** @const {string} */
   const code = new URLSearchParams(req.url.slice(HOST_URL.length + 1)).get("code") || "";
   if (!code) return kapat();
@@ -101,7 +126,7 @@ const getDiscordID = (req, env) => {
     grant_type: "authorization_code",
     code,
     client_id: DISCORD_CLIENT_ID,
-    client_secret: env.DISCORD_CLIENT_SECRET,
+    client_secret: DISCORD_CLIENT_SECRET,
     redirect_uri: HOST_URL
   };
   return fetch(DISCORD_API_URL + "oauth2/token", {
@@ -112,11 +137,11 @@ const getDiscordID = (req, env) => {
     body: new URLSearchParams(/** @type {!Object<string, string>} */(tokenRequest))
   })
     .then((res) => res.json())
-    .then((data) => fetch(DISCORD_API_URL + "users/@me", {
+    .then((/** !Object */ data) => fetch(DISCORD_API_URL + "users/@me", {
       headers: { "authorization": "Bearer " + /** @type {!oauth2.AccessToken} */(data).access_token }
     }))
-    .then((res) => res.json())
-    .then((data) => {
+    .then((/** !Response */ res) => res.json())
+    .then((/** !Object<string, string> */ data) => {
       /** @const {string} */
       const disc = data["discriminator"];
       /** @const {!discord.SignedID} */
@@ -124,7 +149,7 @@ const getDiscordID = (req, env) => {
         id: data["id"],
         username: disc == "0" ? data["username"] : data["username"] + "#" + disc
       };
-      discordID.hmac = getHmac(discordID, env.HMAC_SECRET);
+      discordID.hmac = getHmac(discordID, HMAC_SECRET);
       return new Response(
         `<!doctypehtml><html><script>window.opener.postMessage(${JSON.stringify(discordID)
         },"https://kimlikdao.org");window.close()</script></html>`, {
@@ -142,27 +167,23 @@ const approveCors = () => new Response("", {
   }
 });
 
-/**
- * @implements {cloudflare.ModuleWorker}
- */
+/** @implements {ModuleWorker} */
 const DiscordWorker = {
   /**
    * @override
    *
-   * @param {!cloudflare.Request} req
-   * @param {!DiscordEnv} env
-   * @param {!cloudflare.Context} _
+   * @param {!Request} req
    * @return {!Promise<!Response>|!Response}
    */
-  fetch(req, env, _) {
+  fetch(req) {
     return req.url.length == HOST_URL.length + 1
       ? req.method == "GET"
         ? Response.redirect("https://discord.com/invite/H2wg6pcWXG")
         : req.method == "OPTIONS"
           ? approveCors()
-          : addRole(req, env)
-      : getDiscordID(req, env);
+          : addRole(req)
+      : getDiscordID(req);
   }
-}
+};
 
-globalThis["DiscordWorker"] = DiscordWorker;
+export default DiscordWorker;

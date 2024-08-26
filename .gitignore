@@ -1,5 +1,5 @@
 .DS_Store
-.gizli
+.gizli*
 .vscode
 *lock*
 *.vars
