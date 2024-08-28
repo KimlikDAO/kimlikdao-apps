@@ -1,0 +1,10 @@
+worker:
+  entry: worker.js
+  name: kimlikdao-join
+  domain_binding: join.kimlikdao.org
+  defines:
+    - module: /lib/birimler/email
+      value: resend.api_key
+  kvs:
+    - name: KV
+      namespace_id: 84ae9125ab654c4ca5511acbe63e269f

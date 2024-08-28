@@ -4,6 +4,8 @@
  * @externs
  */
 
+import kimlikdao from "/sdk/api/validationReport.d";
+
 /**
  * @interface
  * @struct
@@ -32,3 +34,5 @@ Başvuru.prototype.twitter;
 
 /** @const {string} */
 Başvuru.prototype.notes;
+
+export { Başvuru };

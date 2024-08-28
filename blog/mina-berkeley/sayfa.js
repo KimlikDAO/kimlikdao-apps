@@ -5,6 +5,8 @@ import { PublicKey } from "/lib/mina/mina";
 
 /** @const {!Element} */
 const ClaimButton = dom.adla("mbcl");
+/** @const {!Element} */
+const KPassButton = dom.adla("mbkp");
 
 const Learn2EarnWorker = new Worker(
   "/blog/mina-berkeley/contracts/Learn2EarnWorker.ts",
@@ -21,3 +23,20 @@ ClaimButton.onclick = () => {
     window.mina.sendTransaction({ transaction: msg.data })
       .then(console.log);
 };
+
+/** @type {Promise<!eth.ERC721Unlockable>} */
+let DosyaSözü;
+
+/**
+ * @param {?string} _
+ * @param {Promise<!EmitHelper.ERC721Unlockable>} dosyaSözü
+ */
+const kpassDeğişti = (_, dosyaSözü) => {
+  /** @const {boolean} */
+  const kpassVar = dosyaSözü != null;
+  DosyaSözü = dosyaSözü;
+}
+
+kpassDeğişti("", null);
+
+Cüzdan.kpassDeğişince(kpassDeğişti);

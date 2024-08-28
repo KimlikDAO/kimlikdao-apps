@@ -1,10 +1,9 @@
-import { create } from "/lib/cloudflare/pageWorker";
+import { create } from "/lib/birimler/cloudflare/kvPageWorker";
 
-/** @const {!cloudflare.ModuleWorker} */
+/** @const {ModuleWorker} */
 const BlogWorker = create("https://blog.kimlikdao.org/", {
   "?tr": "blog/dizin-tr.html",
   "?en": "blog/dizin-en.html",
 });
 
-globalThis["BlogWorker"] = BlogWorker;
 export default BlogWorker;

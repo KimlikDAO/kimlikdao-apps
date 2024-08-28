@@ -1,0 +1,26 @@
+kök: blog
+dizin: "dizin"
+sayfalar:
+  - tr: "eliptik-egriler"
+    en: "elliptic-curves"
+
+  - tr: "eliptik-imza"
+    en: "ecdsa"
+
+  - tr: "2023.12"
+    en: "2023-12"
+
+  - tr: "2024.01"
+    en: "2024-01"
+
+  - tr: "mina-berkeley"
+    en: "mina_berkeley"
+    VARSAYILAN_AĞ: "mina:mainnet"
+
+worker:
+  entry: sunucu/worker.js
+  name: kimlikdao-blog
+  domain_binding: blog.kimlikdao.org
+  kvs:
+    - name: KV
+      namespace_id: 84ae9125ab654c4ca5511acbe63e269f

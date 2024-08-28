@@ -17,9 +17,9 @@ const DISCORD_GUILD_ID = "951587582712639548";
 /** @define {string} */
 const DISCORD_CLIENT_SECRET = "DISCORD_CLIENT_SECRET";
 /** @define {string} */
-const KIMLIKDAO_BOT_TOKEN = "KIMLIKDAO_BOT_TOKEN";
+const DISCORD_BOT_TOKEN = "DISCORD_BOT_TOKEN";
 /** @define {string} */
-const HMAC_SECRET = "HMAC_SECRET";
+const DISCORD_HMAC_SECRET = "HMAC_SECRET";
 
 /**
  * @const {string}
@@ -67,7 +67,7 @@ const respondWith = (status) => new Response(null, {
  */
 const addRole = (req) => req.json()
   .then(/** @type {function(*)} */((/** @type {discord.RoleRequest} */ roleReq) => {
-    if (getHmac(roleReq.discordID, HMAC_SECRET) != roleReq.discordID.hmac)
+    if (getHmac(roleReq.discordID, DISCORD_HMAC_SECRET) != roleReq.discordID.hmac)
       return respondWith(401);
     /** @const {ChainId} */
     const chainId = /** @type {ChainId} */(roleReq.chainID);
@@ -95,7 +95,7 @@ const addRole = (req) => req.json()
               + `members/${roleReq.discordID.id}/roles/${roleID}`, {
               method: "PUT",
               headers: {
-                "authorization": "Bot " + KIMLIKDAO_BOT_TOKEN,
+                "authorization": "Bot " + DISCORD_BOT_TOKEN,
                 "content-type": "application/json"
               }
             }).then((res) => res.ok ? respondWith(200) : respondWith(401), () => respondWith(400))
@@ -149,7 +149,7 @@ const getDiscordID = (req) => {
         id: data["id"],
         username: disc == "0" ? data["username"] : data["username"] + "#" + disc
       };
-      discordID.hmac = getHmac(discordID, HMAC_SECRET);
+      discordID.hmac = getHmac(discordID, DISCORD_HMAC_SECRET);
       return new Response(
         `<!doctypehtml><html><script>window.opener.postMessage(${JSON.stringify(discordID)
         },"https://kimlikdao.org");window.close()</script></html>`, {
@@ -167,11 +167,9 @@ const approveCors = () => new Response("", {
   }
 });
 
-/** @implements {ModuleWorker} */
+/** @const {ModuleWorker} */
 const DiscordWorker = {
   /**
-   * @override
-   *
    * @param {!Request} req
    * @return {!Promise<!Response>|!Response}
    */

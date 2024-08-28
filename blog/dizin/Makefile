@@ -14,20 +14,11 @@ build/blog/dizin/sayfa-%.js: blog/dizin/sayfa.js \
     lib/mina/*.d.js \
     lib/node/*.d.js lib/node/ipfs.js \
     lib/util/dom.js lib/util/çevir.js lib/util/base58.js
-	mkdir -p $(dir $@)
-	bun google-closure-compiler -W VERBOSE -O ADVANCED --charset UTF-8 \
-                            --define "TR\$$\$$module\$$lib\$$util\$$dom=$(Lang-$*)" \
-                            --define "KonumTR\$$\$$module\$$birim\$$dil\$$birim=$(blog/dizin-tr)" \
-                            --define "KonumEN\$$\$$module\$$birim\$$dil\$$birim=$(blog/dizin-en)" \
-                            --emit_use_strict \
-                            --module_resolution NODE \
-                            --assume_function_wrapper \
-                            --dependency_mode PRUNE \
-                            --entry_point $< \
-                            --js $^ \
-                            --js_output_file $@
-	bun uglifyjs $@ -m -c toplevel,unsafe -o $@
-	wc $@
+	bun lib/kdjs/kdjs.js $< --define \
+	    "TR\$$\$$module\$$lib\$$util\$$dom=$(Lang-$*)" \
+	    "KonumTR\$$\$$module\$$birim\$$dil\$$birim=$(blog/dizin-tr)" \
+	    "KonumEN\$$\$$module\$$birim\$$dil\$$birim=$(blog/dizin-en)" \
+	    -o $@
 
 build/blog/dizin/sayfa-%.css: blog/dizin/sayfa.css \
     birim/lato/l400.css \

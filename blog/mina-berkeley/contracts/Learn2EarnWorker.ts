@@ -1,18 +1,17 @@
+import { PublicKey as KPublicKey } from "@kimlikdao/lib/mina/mina";
 import {
   HumanIDv1,
   HumanIDv1Witness,
-  readPublicKey,
 } from "@kimlikdao/sdk/mina/HumanIDv1";
 import {
   Field,
-  MerkleTree,
   Mina,
   Poseidon,
   PrivateKey,
   PublicKey,
-  Signature,
+  Signature
 } from "o1js";
-import { Learn2Earn, Learn2EarnContract, LEARN2EARN } from "./Learn2Earn";
+import { LEARN2EARN, Learn2Earn, Learn2EarnContract } from "./Learn2Earn";
 
 const NODE_HOSTNAME = "mina.kimlikdao.org";
 
@@ -25,12 +24,21 @@ const Learn2EarnCompiled = Learn2EarnContract.compile().then(() => {
 
 const Network = Mina.Network("https://api.minascan.io/node/devnet/v1/graphql");
 Mina.setActiveInstance(Network);
-console.log("Devnet network instance configured.");
+console.log("Devnet network instance configured.\nNow compiling the contract");
+
+type Witness = {
+  isLeft: boolean,
+  sibling: string | Field
+};
 
 const getWitness = (humanIDv1Id: bigint): Promise<HumanIDv1Witness> =>
   fetch(`https://${NODE_HOSTNAME}/witness/${LEARN2EARN}/${(humanIDv1Id & 0xffffffffn).toString(16)}`)
     .then((res) => res.json())
-    .then((data) => new HumanIDv1Witness(data));
+    .then((witness) => {
+      witness.forEach((w: Witness) => w.sibling = Field(BigInt("0x" + w.sibling)))
+      console.log(witness);
+      return new HumanIDv1Witness(witness);
+    });
 
 const blindingCommit = (sender: PublicKey) => {
   const commitmentR = Field.random();
@@ -53,8 +61,8 @@ const signHumanIDv1 = (humanIDv1Id: bigint, sender: PublicKey): HumanIDv1 => {
 };
 
 onmessage = async (event) => {
-  const sender = readPublicKey(event.data);
-  const humanIDv1 = signHumanIDv1(100n, sender); // HumanIDv1.fromBytes(event.data.subarray(33));
+  const sender = PublicKey.from(KPublicKey.fromBytes(event.data));
+  const humanIDv1 = signHumanIDv1(103n, sender); // HumanIDv1.fromBytes(event.data.subarray(33));
   const [witness] = await Promise.all([getWitness(humanIDv1.id.toBigInt()), Learn2EarnCompiled]);
 
   const tx = await Mina.transaction(sender, () =>

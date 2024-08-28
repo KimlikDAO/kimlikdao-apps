@@ -1,0 +1,9 @@
+worker:
+  entry: worker.js
+  name: kimlikdao-discord
+  domain_binding: discord.kimlikdao.org
+  defines:
+    - discord.client_id
+    - discord.client_secret
+    - discord.bot_token
+    - discord.hmac_secret

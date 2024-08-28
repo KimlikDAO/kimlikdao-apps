@@ -20,7 +20,7 @@ jobs:
           submodules: recursive
 
       - name: Install bun
-        uses: oven-sh/setup-bun@v1
+        uses: oven-sh/setup-bun@v2
 
       - name: Install build tools
         run: |
@@ -28,13 +28,9 @@ jobs:
           brew install pngcrush brotli zopfli woff2 webp
           pip install fonttools
 
-      - name: Build blog index
-        run: |
-          make blog/dizin.sayfa
-
       - name: Build prod worker
         run: |
-          make build/blog/sunucu/prod.js
+          bun lib/birimler/builder.js blog
 
   build-join:
     name: Build KimlikDAO join
@@ -49,7 +45,7 @@ jobs:
           submodules: recursive
 
       - name: Install bun
-        uses: oven-sh/setup-bun@v1
+        uses: oven-sh/setup-bun@v2
 
       - name: Install build tools
         run: |
@@ -57,13 +53,9 @@ jobs:
           brew install pngcrush brotli zopfli woff2 webp
           pip install fonttools
 
-      - name: Build join page
+      - name: Build the worker
         run: |
-          make join.sayfa
-
-      - name: Build prod worker
-        run: |
-          make build/join/prod.js
+          bun lib/birimler/builder.js join
 
   build-discord:
     name: Build KimlikDAO discord worker
@@ -78,12 +70,12 @@ jobs:
           submodules: recursive
 
       - name: Install bun
-        uses: oven-sh/setup-bun@v1
+        uses: oven-sh/setup-bun@v2
 
       - name: Install build tools
         run: |
           bun i
 
-      - name: Build discord worker
+      - name: Build the worker
         run: |
-          make build/discord/prod.js
+          bun lib/birimler/builder.js discord

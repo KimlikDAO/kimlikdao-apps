@@ -2,7 +2,7 @@ import Cüzdan from "/birim/cüzdan/birim";
 import "/birim/dil/birim";
 import { kur as kaydolKur } from "/birim/kaydol/birim";
 import Kpass from "/birim/kpass/birim";
-import KPass from "/lib/ethereum/KPassLite";
+import KPassLite from "/lib/ethereum/KPassLite";
 import dom from "/lib/util/dom";
 import { getValidationRequest } from "/sdk/client";
 
@@ -198,7 +198,7 @@ const başvur = (dosyaSözü) => {
     return dosyaSözü.then((dosya) => getValidationRequest(
       Cüzdan.bağlantı(),
       Cüzdan.ağ(),
-      KPass.getAddress(Cüzdan.ağ()),
+      KPassLite.getAddress(Cüzdan.ağ()),
       /** @type {string} */(Cüzdan.adres()),
       dosya,
       ambassador ? ["humanID"] : ["personInfo", "contactInfo", "addressInfo", "kütükBilgileri"],
